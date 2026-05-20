@@ -25,6 +25,7 @@ export const Navbar = () => {
   const navLinks: { label: string; sectionId: string }[] = [
     { label: "Menu", sectionId: "menu" },
     { label: "Experience", sectionId: "experience" },
+    { label: "Reserve", sectionId: "reserve" }, // ← add this
     { label: "Visit", sectionId: "visit" },
   ];
 
