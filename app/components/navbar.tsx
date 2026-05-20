@@ -53,7 +53,7 @@ export const Navbar = () => {
           </button>
 
           {/* Desktop Links */}
-          <ul className="hidden md:flex items-center gap-9">
+          <ul className="hidden md:flex items-center gap-6 lg:gap-9">
             {navLinks.map((link) => (
               <li key={link.sectionId}>
                 <button
