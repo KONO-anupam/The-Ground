@@ -47,7 +47,7 @@ export const Navbar = () => {
           {/* Wordmark — clicks back to top */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="font-['Cormorant_Garamond'] text-xl tracking-[0.18em] text-[#f4f4f5] uppercase select-none bg-transparent border-none cursor-pointer"
+            className="font-cormorant text-xl tracking-[0.18em] text-[#f4f4f5] uppercase select-none bg-transparent border-none cursor-pointer"
           >
             The Ground
           </button>
@@ -58,7 +58,7 @@ export const Navbar = () => {
               <li key={link.sectionId}>
                 <button
                   onClick={() => handleNav(link.sectionId)}
-                  className="group relative text-[11px] tracking-[0.2em] uppercase text-[#a1a1aa] hover:text-[#f4f4f5] transition-colors duration-300 font-['Inter'] font-light bg-transparent border-none cursor-pointer"
+                  className="group relative text-[11px] tracking-[0.2em] uppercase text-[#a1a1aa] hover:text-[#f4f4f5] transition-colors duration-300 font-inter font-light bg-transparent border-none cursor-pointer"
                 >
                   {link.label}
                   <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-[#f4f4f5] transition-all duration-300 group-hover:w-full" />
@@ -71,7 +71,7 @@ export const Navbar = () => {
           <div className="flex items-center gap-5">
             <button
               onClick={() => handleNav("visit")}
-              className="hidden md:inline-flex items-center h-8 px-5 border border-[#27272a] hover:border-[#f4f4f5]/40 text-[10px] tracking-[0.22em] uppercase text-[#a1a1aa] hover:text-[#f4f4f5] transition-all duration-300 font-['Inter'] font-light bg-transparent cursor-pointer"
+              className="hidden md:inline-flex items-center h-8 px-5 border border-[#27272a] hover:border-[#f4f4f5]/40 text-[10px] tracking-[0.22em] uppercase text-[#a1a1aa] hover:text-[#f4f4f5] transition-all duration-300 font-inter font-light bg-transparent cursor-pointer"
             >
               Find Us
             </button>
@@ -169,7 +169,7 @@ export const Navbar = () => {
                     transition={{ delay: 0.1 + i * 0.07, duration: 0.4 }}
                     className="group flex items-center justify-between py-5 border-b border-[#27272a] text-[#a1a1aa] hover:text-[#f4f4f5] transition-colors duration-300 bg-transparent border-x-0 border-t-0 cursor-pointer text-left w-full"
                   >
-                    <span className="font-['Cormorant_Garamond'] text-2xl font-light italic tracking-wide">
+                    <span className="font-cormorant text-2xl font-light italic tracking-wide">
                       {link.label}
                     </span>
                     <svg
@@ -193,7 +193,7 @@ export const Navbar = () => {
                   initial={{ opacity: 0, x: 16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.38, duration: 0.4 }}
-                  className="mt-8 self-start inline-flex items-center h-9 px-6 border border-[#27272a] hover:border-[#f4f4f5]/40 text-[10px] tracking-[0.22em] uppercase text-[#a1a1aa] hover:text-[#f4f4f5] transition-all duration-300 font-['Inter'] bg-transparent cursor-pointer"
+                  className="mt-8 self-start inline-flex items-center h-9 px-6 border border-[#27272a] hover:border-[#f4f4f5]/40 text-[10px] tracking-[0.22em] uppercase text-[#a1a1aa] hover:text-[#f4f4f5] transition-all duration-300 font-inter bg-transparent cursor-pointer"
                 >
                   Find Us
                 </motion.button>
@@ -201,7 +201,7 @@ export const Navbar = () => {
 
               {/* Footer tag */}
               <div className="mt-auto px-8 pb-10">
-                <p className="text-[10px] tracking-[0.2em] uppercase text-[#3f3f46] font-['Inter']">
+                <p className="text-[10px] tracking-[0.2em] uppercase text-[#3f3f46] font-inter">
                   Rourkela, Odisha
                 </p>
               </div>

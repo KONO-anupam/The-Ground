@@ -12,7 +12,7 @@ const MarqueeUnit = () => (
       <div key={i} className="flex items-center">
         <span
           style={{
-            fontFamily: "'Inter', sans-serif",
+            fontFamily: "var(--font-inter)",
             fontWeight: 900,
             fontSize: "clamp(1.15rem, 3.2vw, 2rem)",
             letterSpacing: "0.18em",

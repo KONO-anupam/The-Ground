@@ -191,14 +191,12 @@ export default function TheGroundFooter() {
   return (
     <footer
       id="visit"
-      className="relative bg-[#0d0d0e] text-[#f4f4f5] overflow-hidden"
-      style={{ fontFamily: "'Inter', 'Geist', sans-serif" }}
+      className="relative bg-[#0d0d0e] text-[#f4f4f5] overflow-hidden font-inter"
     >
       {/* Wordmark band */}
       <div className="px-6 md:px-12 lg:px-20 pt-16 pb-2">
         <p
-          className="text-[clamp(42px,9vw,120px)] leading-none tracking-[-0.03em] text-[#18181b] font-serif select-none pointer-events-none"
-          style={{ fontFamily: "'Playfair Display', 'Georgia', serif" }}
+          className="font-inter text-[clamp(42px,9vw,120px)] leading-none tracking-[-0.03em] text-[#18181b] font-serif select-none pointer-events-none"
         >
           The Ground
         </p>
