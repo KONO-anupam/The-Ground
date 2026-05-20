@@ -128,7 +128,7 @@ function ContactBlock() {
         aria-label="Follow The Ground on Instagram"
         className="inline-flex items-center gap-3 group"
       >
-        <span className="w-[22px] h-[22px] text-[#52525b] group-hover:text-[#f4f4f5] transition-all duration-500 group-hover:scale-110 transform-gpu block">
+        <span className="w-5.5[22px] text-[#52525b] group-hover:text-[#f4f4f5] transition-all duration-500 group-hover:scale-110 transform-gpu block">
           <InstagramIcon />
         </span>
 
@@ -142,12 +142,12 @@ function ContactBlock() {
 
 function MapBlock() {
   return (
-    <div className="w-full h-full min-h-[220px] sm:min-h-[240px]">
+    <div className="w-full h-full min-h-55 sm:min-h-60">
       <p className="text-[10px] tracking-[0.2em] text-[#52525b] uppercase mb-4 font-light">
         Navigate
       </p>
 
-      <div className="relative w-full h-[220px] sm:h-[260px] overflow-hidden border border-[#27272a]">
+      <div className="relative w-full h-55 sm:h-65 overflow-hidden border border-[#27272a]">
         <iframe
           title="The Ground location map"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3677.6!2d84.8825!3d22.2271!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a201a4a3e5a0001%3A0x1!2sCivil+Township%2C+Rourkela%2C+Odisha!5e0!3m2!1sen!2sin!4v1699999999999!5m2!1sen!2sin"

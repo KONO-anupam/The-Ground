@@ -1,4 +1,3 @@
-import { useRef } from "react";
 
 const PHRASES = [
   { text: "Roasted Weekly", outline: false },

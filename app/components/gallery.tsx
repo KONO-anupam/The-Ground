@@ -83,11 +83,11 @@ export const BentoGallery: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="mb-12 md:mb-14"
         >
-          <p className="mb-3 font-['Inter'] text-[9.5px] font-light uppercase tracking-[0.3em] text-[#52525b]">
+          <p className="mb-3 font-inter text-[9.5px] font-light uppercase tracking-[0.3em] text-[#52525b]">
             The Experience
           </p>
           <h2
-            className="font-['Cormorant_Garamond'] font-light text-[#f4f4f5]"
+            className="font-cormorant font-light text-[#f4f4f5]"
             style={{
               fontSize: "clamp(1.9rem, 4vw, 3.1rem)",
               letterSpacing: "-0.01em",
@@ -126,10 +126,10 @@ export const BentoGallery: React.FC = () => {
             className="col-span-1 border border-[#1a1a1b] border-t-2 border-t-[#f4f4f5]/10 bg-[#0f0f10] p-5 md:col-span-2 md:p-6 flex flex-col justify-between"
           >
             <div className="flex items-start justify-between">
-              <span className="font-['Inter'] text-[9px] font-light uppercase tracking-[0.3em] text-[#3f3f46]">
+              <span className="font-inter text-[9px] font-light uppercase tracking-[0.3em] text-[#3f3f46]">
                 Current Feature
               </span>
-              <span className="font-['Inter'] text-[9px] font-light uppercase tracking-[0.2em] text-[#27272a]">
+              <span className="font-inter text-[9px] font-light uppercase tracking-[0.2em] text-[#27272a]">
                 Lot №&thinsp;24A
               </span>
             </div>
@@ -143,10 +143,10 @@ export const BentoGallery: React.FC = () => {
                   ["Harvest", "November 2024"],
                 ].map(([k, v]) => (
                   <div key={k} className="flex items-baseline gap-3">
-                    <span className="w-16 shrink-0 font-['Inter'] text-[9px] font-light uppercase tracking-[0.2em] text-[#52525b]">
+                    <span className="w-16 shrink-0 font-inter text-[9px] font-light uppercase tracking-[0.2em] text-[#52525b]">
                       {k}
                     </span>
-                    <span className="font-['Inter'] text-[11px] font-light uppercase tracking-[0.12em] text-[#a1a1aa]">
+                    <span className="font-inter text-[11px] font-light uppercase tracking-[0.12em] text-[#a1a1aa]">
                       {v}
                     </span>
                   </div>
@@ -164,7 +164,7 @@ export const BentoGallery: React.FC = () => {
             animate={inView ? "visible" : "hidden"}
             className="col-span-1 overflow-hidden border border-[#1a1a1b] bg-[#111112] p-5 md:p-6 flex flex-col justify-between"
           >
-            <span className="font-['Inter'] text-[9px] font-light uppercase tracking-[0.28em] text-[#52525b]">
+            <span className="font-inter text-[9px] font-light uppercase tracking-[0.28em] text-[#52525b]">
               Tasting Notes
             </span>
 
@@ -173,7 +173,7 @@ export const BentoGallery: React.FC = () => {
                 (note) => (
                   <span
                     key={note}
-                    className="border border-[#27272a] px-2.5 py-1 font-['Inter'] text-[9.5px] font-light uppercase tracking-[0.14em] text-[#a1a1aa]"
+                    className="border border-[#27272a] px-2.5 py-1 font-inter text-[9.5px] font-light uppercase tracking-[0.14em] text-[#a1a1aa]"
                   >
                     {note}
                   </span>
@@ -192,19 +192,19 @@ export const BentoGallery: React.FC = () => {
             animate={inView ? "visible" : "hidden"}
             className="col-span-1 border border-[#1a1a1b] bg-[#f4f4f5] p-5 md:p-6 flex flex-col justify-between"
           >
-            <span className="font-['Inter'] text-[9px] font-light uppercase tracking-[0.28em] text-[#a1a1aa]">
+            <span className="font-inter text-[9px] font-light uppercase tracking-[0.28em] text-[#a1a1aa]">
               Our belief
             </span>
 
             <blockquote
-              className="font-['Cormorant_Garamond'] font-light leading-[1.3] text-[#111112]"
+              className="font-cormorant font-light leading-[1.3] text-[#111112]"
               style={{ fontSize: "clamp(14px, 1.5vw, 18px)" }}
             >
               &ldquo;Good coffee asks nothing of you — only your full
               attention.&rdquo;
             </blockquote>
 
-            <span className="font-['Inter'] text-[9px] font-light uppercase tracking-[0.18em] text-[#a1a1aa]">
+            <span className="font-inter text-[9px] font-light uppercase tracking-[0.18em] text-[#a1a1aa]">
               — The Ground
             </span>
           </motion.div>
@@ -231,13 +231,13 @@ export const BentoGallery: React.FC = () => {
             animate={inView ? "visible" : "hidden"}
             className="col-span-1 border border-[#1a1a1b] bg-[#0f0f10] p-5 md:p-6 flex flex-col justify-between"
           >
-            <span className="font-['Inter'] text-[9px] font-light uppercase tracking-[0.28em] text-[#52525b]">
+            <span className="font-inter text-[9px] font-light uppercase tracking-[0.28em] text-[#52525b]">
               Sourcing
             </span>
 
             <div>
               <span
-                className="block font-['Cormorant_Garamond'] font-light text-[#f4f4f5]"
+                className="block font-cormorant font-light text-[#f4f4f5]"
                 style={{
                   fontSize: "clamp(2.4rem, 5vw, 4rem)",
                   lineHeight: 1,
@@ -246,7 +246,7 @@ export const BentoGallery: React.FC = () => {
                 12
               </span>
 
-              <span className="mt-1 block font-['Inter'] text-[10px] font-light uppercase tracking-[0.22em] text-[#52525b]">
+              <span className="mt-1 block font-inter text-[10px] font-light uppercase tracking-[0.22em] text-[#52525b]">
                 Farms · 6 countries
               </span>
             </div>
@@ -262,12 +262,12 @@ export const BentoGallery: React.FC = () => {
             animate={inView ? "visible" : "hidden"}
             className="col-span-1 border border-[#1a1a1b] border-l-2 border-l-[#f4f4f5]/10 bg-[#111112] p-5 md:p-6 flex flex-col justify-center gap-2"
           >
-            <span className="font-['Inter'] text-[9px] font-light uppercase tracking-[0.28em] text-[#52525b]">
+            <span className="font-inter text-[9px] font-light uppercase tracking-[0.28em] text-[#52525b]">
               Method
             </span>
 
             <span
-              className="font-['Cormorant_Garamond'] italic font-light text-[#d4d4d8]"
+              className="font-cormorant italic font-light text-[#d4d4d8]"
               style={{
                 fontSize: "clamp(1.1rem, 2vw, 1.5rem)",
                 lineHeight: 1.2,
@@ -302,16 +302,16 @@ export const BentoGallery: React.FC = () => {
             className="col-span-1 border border-[#1a1a1b] bg-[#0d0d0e] p-5 md:col-span-2 md:p-6 flex items-end justify-between"
           >
             <div className="flex flex-col gap-1">
-              <span className="font-['Inter'] text-[9px] font-light uppercase tracking-[0.28em] text-[#3f3f46]">
+              <span className="font-inter text-[9px] font-light uppercase tracking-[0.28em] text-[#3f3f46]">
                 Find us
               </span>
 
-              <span className="font-['Inter'] text-[10.5px] font-light uppercase tracking-[0.14em] text-[#71717a]">
+              <span className="font-inter text-[10.5px] font-light uppercase tracking-[0.14em] text-[#71717a]">
                 22°14&prime;N · 84°51&prime;E
               </span>
 
               <span
-                className="font-['Cormorant_Garamond'] italic font-light text-[#a1a1aa]"
+                className="font-cormorant italic font-light text-[#a1a1aa]"
                 style={{ fontSize: "clamp(12px, 1.5vw, 15px)" }}
               >
                 Civil Township, Rourkela, Odisha
@@ -320,7 +320,7 @@ export const BentoGallery: React.FC = () => {
 
             <a
               href="#visit"
-              className="border-b border-[#27272a] pb-0.5 font-['Inter'] text-[9px] font-light uppercase tracking-[0.22em] text-[#52525b] transition-colors duration-300 hover:border-[#52525b] hover:text-[#a1a1aa]"
+              className="border-b border-[#27272a] pb-0.5 font-inter text-[9px] font-light uppercase tracking-[0.22em] text-[#52525b] transition-colors duration-300 hover:border-[#52525b] hover:text-[#a1a1aa]"
             >
               Directions ↗
             </a>

@@ -191,7 +191,31 @@ const MENU_DATA: MenuCategory[] = [
 ];
 
 // ─────────────────────────────────────────────
-// CURSOR THUMBNAIL
+// HOOK: detect touch / pointer device
+// ─────────────────────────────────────────────
+
+function useIsTouchDevice(): boolean {
+  // Always initialise as false so server HTML matches the client's first
+  // render — the only safe approach with SSR. After hydration the effect
+  // reads the real pointer type and does a single corrective re-render if
+  // needed. The brief flash (touch device renders as desktop for one frame)
+  // is imperceptible because it happens before paint.
+  const [isTouch, setIsTouch] = useState<boolean>(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(pointer: coarse)");
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- post-hydration correction for SSR-safe pointer detection
+    setIsTouch(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsTouch(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  return isTouch;
+}
+
+// ─────────────────────────────────────────────
+// CURSOR THUMBNAIL  (desktop-only)
 // ─────────────────────────────────────────────
 
 interface CursorThumbnailProps {
@@ -218,12 +242,14 @@ const CursorThumbnail: React.FC<CursorThumbnailProps> = ({
   motionX.set(x);
   motionY.set(y);
 
-  const translateX = useTransform(springX, (v) => v + 20);
-  const translateY = useTransform(springY, (v) => v - 60);
+  // Offset: 16px right of cursor, 152px up so the thumbnail
+  // sits clearly above the pointer rather than overlapping text.
+  const translateX = useTransform(springX, (v) => v + 16);
+  const translateY = useTransform(springY, (v) => v - 152);
 
   return (
     <motion.div
-      className="fixed top-0 left-0 z-[100] pointer-events-none"
+      className="fixed top-0 left-0 z-100 pointer-events-none"
       style={{ x: translateX, y: translateY }}
     >
       <motion.div
@@ -245,12 +271,44 @@ const CursorThumbnail: React.FC<CursorThumbnailProps> = ({
             unoptimized
           />
         )}
-
         <div className="absolute inset-0 bg-black/20" />
       </motion.div>
     </motion.div>
   );
 };
+
+// ─────────────────────────────────────────────
+// TOUCH IMAGE PANEL  (mobile-only)
+// Inline reveal that expands below the tapped row.
+// ─────────────────────────────────────────────
+
+interface TouchImagePanelProps {
+  src: string;
+  name: string;
+}
+
+const TouchImagePanel: React.FC<TouchImagePanelProps> = ({ src, name }) => (
+  <motion.div
+    key="touch-panel"
+    initial={{ opacity: 0, height: 0 }}
+    animate={{ opacity: 1, height: 160 }}
+    exit={{ opacity: 0, height: 0 }}
+    transition={{ duration: 0.32, ease: [0.32, 0, 0.18, 1] }}
+    className="overflow-hidden w-full"
+  >
+    <div className="relative w-full h-40 rounded-xl overflow-hidden my-2">
+      <Image
+        src={src}
+        alt={name}
+        fill
+        className="object-cover"
+        draggable={false}
+        unoptimized
+      />
+      <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent" />
+    </div>
+  </motion.div>
+);
 
 // ─────────────────────────────────────────────
 // MENU ITEM ROW
@@ -259,9 +317,14 @@ const CursorThumbnail: React.FC<CursorThumbnailProps> = ({
 interface MenuItemRowProps {
   item: MenuItem;
   index: number;
+  // Desktop props
   onHover: (item: MenuItem | null) => void;
   onMouseMove: (x: number, y: number) => void;
   isHovered: boolean;
+  // Touch props
+  isTouch: boolean;
+  isTapped: boolean;
+  onTap: (name: string | null) => void;
 }
 
 const MenuItemRow: React.FC<MenuItemRowProps> = ({
@@ -270,13 +333,23 @@ const MenuItemRow: React.FC<MenuItemRowProps> = ({
   onHover,
   onMouseMove,
   isHovered,
+  isTouch,
+  isTapped,
+  onTap,
 }) => {
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      onMouseMove(e.clientX, e.clientY);
+      if (!isTouch) onMouseMove(e.clientX, e.clientY);
     },
-    [onMouseMove]
+    [isTouch, onMouseMove]
   );
+
+  const handleTap = useCallback(() => {
+    if (!isTouch) return;
+    onTap(isTapped ? null : item.name);
+  }, [isTouch, isTapped, item.name, onTap]);
+
+  const active = isTouch ? isTapped : isHovered;
 
   return (
     <motion.div
@@ -287,43 +360,59 @@ const MenuItemRow: React.FC<MenuItemRowProps> = ({
         duration: 0.5,
         ease: [0.32, 0, 0.18, 1],
       }}
-      onMouseEnter={() => onHover(item)}
-      onMouseLeave={() => onHover(null)}
+      // Desktop: cursor-none hides the system cursor so the
+      // thumbnail feels like the "real" cursor.
+      // Touch: default cursor, tap toggles the inline panel.
+      className={isTouch ? "group relative" : "group relative cursor-none"}
+      onMouseEnter={() => { if (!isTouch) onHover(item); }}
+      onMouseLeave={() => { if (!isTouch) onHover(null); }}
       onMouseMove={handleMouseMove}
-      className="group relative cursor-none"
+      onClick={handleTap}
     >
       <div
         className={`flex items-baseline gap-3 py-4 border-b transition-colors duration-300 ${
-          isHovered ? "border-[#3f3f46]" : "border-[#1f1f20]"
+          active ? "border-[#3f3f46]" : "border-[#1f1f20]"
         }`}
       >
-        <div className="flex flex-col min-w-0 flex-shrink-0">
+        <div className="flex flex-col min-w-0 shrink-0">
           <div className="flex items-center gap-2.5">
             <span
-              className={`font-['Cormorant_Garamond'] text-lg font-light transition-colors duration-200 ${
-                isHovered ? "text-[#f4f4f5]" : "text-[#d4d4d8]"
+              className={`font-cormorant text-lg font-light transition-colors duration-200 ${
+                active ? "text-[#f4f4f5]" : "text-[#d4d4d8]"
               }`}
             >
               {item.name}
             </span>
 
             {item.tag && (
-              <span className="text-[8.5px] tracking-[0.18em] uppercase text-[#71717a] border border-[#27272a] px-1.5 py-0.5 font-['Inter'] font-light">
+              <span className="text-[8.5px] tracking-[0.18em] uppercase text-[#71717a] border border-[#27272a] px-1.5 py-0.5 font-inter font-light">
                 {item.tag}
               </span>
             )}
+
+            {/* Tap hint chevron — visible on touch only, rotates when open */}
+            {isTouch && (
+              <motion.span
+                animate={{ rotate: isTapped ? 180 : 0 }}
+                transition={{ duration: 0.22 }}
+                className="ml-auto text-[#52525b] text-xs select-none"
+                aria-hidden="true"
+              >
+                ▾
+              </motion.span>
+            )}
           </div>
 
-          <span className="text-[11px] font-['Inter'] font-light text-[#52525b] tracking-wide mt-0.5">
+          <span className="text-[11px] font-inter font-light text-[#52525b] tracking-wide mt-0.5">
             {item.description}
           </span>
         </div>
 
-        <div className="flex-1 min-w-[16px] flex items-end pb-[7px]">
+        <div className="flex-1 min-w-4 flex items-end pb-1.75">
           <div
             className="w-full h-px transition-colors duration-300"
             style={{
-              backgroundImage: isHovered
+              backgroundImage: active
                 ? "repeating-linear-gradient(90deg, #3f3f46 0, #3f3f46 2px, transparent 0, transparent 6px)"
                 : "repeating-linear-gradient(90deg, #27272a 0, #27272a 2px, transparent 0, transparent 6px)",
             }}
@@ -331,13 +420,22 @@ const MenuItemRow: React.FC<MenuItemRowProps> = ({
         </div>
 
         <span
-          className={`font-['Cormorant_Garamond'] text-base font-light flex-shrink-0 tabular-nums transition-colors duration-200 ${
-            isHovered ? "text-[#f4f4f5]" : "text-[#71717a]"
+          className={`font-cormorant text-base font-light shrink-0 tabular-nums transition-colors duration-200 ${
+            active ? "text-[#f4f4f5]" : "text-[#71717a]"
           }`}
         >
           ₹{item.price}
         </span>
       </div>
+
+      {/* Inline image panel for touch devices */}
+      {isTouch && (
+        <AnimatePresence>
+          {isTapped && (
+            <TouchImagePanel src={item.image} name={item.name} />
+          )}
+        </AnimatePresence>
+      )}
     </motion.div>
   );
 };
@@ -354,14 +452,22 @@ const TABS: { id: TabId; label: string }[] = [
 
 export const Menu: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabId>("brews");
+
+  // Desktop state
   const [hoveredItem, setHoveredItem] = useState<MenuItem | null>(null);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+
+  // Touch state — only one row expanded at a time
+  const [tappedItemName, setTappedItemName] = useState<string | null>(null);
+
+  const isTouch = useIsTouchDevice();
 
   const activeCategory = MENU_DATA.find((c) => c.id === activeTab)!;
 
   const handleTabChange = (id: TabId) => {
     if (id !== activeTab) {
       setHoveredItem(null);
+      setTappedItemName(null);
       setActiveTab(id);
     }
   };
@@ -370,18 +476,25 @@ export const Menu: React.FC = () => {
     setCursorPos({ x, y });
   }, []);
 
-  // FIX: remove hover cursor on scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      setHoveredItem(null);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+  const handleTap = useCallback((name: string | null) => {
+    setTappedItemName(name);
   }, []);
+
+  // Clear hover on scroll (desktop)
+  useEffect(() => {
+    if (isTouch) return;
+    const handleScroll = () => setHoveredItem(null);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isTouch]);
+
+  // Clear tapped item when tab changes or user scrolls (touch)
+  useEffect(() => {
+    if (!isTouch) return;
+    const handleScroll = () => setTappedItemName(null);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isTouch]);
 
   return (
     <section
@@ -405,10 +518,10 @@ export const Menu: React.FC = () => {
           className="mb-14 md:mb-16 flex items-end justify-between"
         >
           <div>
-            <p className="text-[9.5px] tracking-[0.3em] uppercase text-[#52525b] font-['Inter'] font-light mb-3">
+            <p className="text-[9.5px] tracking-[0.3em] uppercase text-[#52525b] font-inter font-light mb-3">
               The Ground
             </p>
-            <h2 className="font-['Cormorant_Garamond'] font-light text-[#f4f4f5] text-4xl">
+            <h2 className="font-cormorant font-light text-[#f4f4f5] text-4xl">
               What we offer
             </h2>
           </div>
@@ -449,19 +562,26 @@ export const Menu: React.FC = () => {
                 onHover={setHoveredItem}
                 onMouseMove={handleMouseMove}
                 isHovered={hoveredItem?.name === item.name}
+                isTouch={isTouch}
+                isTapped={tappedItemName === item.name}
+                onTap={handleTap}
               />
             ))}
           </motion.div>
         </AnimatePresence>
       </div>
 
-      <CursorThumbnail
-        src={hoveredItem?.image ?? null}
-        visible={!!hoveredItem}
-        x={cursorPos.x}
-        y={cursorPos.y}
-      />
+      {/* Cursor thumbnail only rendered on non-touch devices */}
+      {!isTouch && (
+        <CursorThumbnail
+          src={hoveredItem?.image ?? null}
+          visible={!!hoveredItem}
+          x={cursorPos.x}
+          y={cursorPos.y}
+        />
+      )}
     </section>
   );
 };
+
 export default Menu;

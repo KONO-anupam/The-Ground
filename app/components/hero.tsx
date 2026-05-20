@@ -46,13 +46,13 @@ export const Hero = () => {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.7 }}
-          className="text-[10px] tracking-[0.3em] uppercase text-[#a1a1aa] font-['Inter'] font-light  mb-3"
+          className="text-[10px] tracking-[0.3em] uppercase text-[#a1a1aa] font-inter font-light  mb-3"
         >
           Single Origin · Small Batch
         </motion.p>
 
         {/* Main headline */}
-        <h1 className="font-['Cormorant_Garamond'] font-light leading-[1.08] overflow-hidden">
+        <h1 className="font-cormorant font-light leading-[1.08] overflow-hidden">
           {headlineLines.map(({ text, delay }, i) => (
             <span key={i} className="block overflow-hidden">
               <motion.span
@@ -88,7 +88,7 @@ export const Hero = () => {
           className="flex items-center gap-4 mt-8"
         >
           <span className="block w-10 h-px bg-[#27272a]" />
-          <p className="text-[11px] tracking-[0.22em] uppercase text-[#a1a1aa] font-['Inter'] font-light">
+          <p className="text-[11px] tracking-[0.22em] uppercase text-[#a1a1aa] font-inter font-light">
             Open daily — 7am to 10pm
           </p>
         </motion.div>
@@ -102,7 +102,7 @@ export const Hero = () => {
         >
           <a
             href="#menu"
-            className="inline-flex items-center gap-3 group text-[11px] tracking-[0.22em] uppercase text-[#f4f4f5] font-['Inter'] font-light hover:text-[#a1a1aa] transition-colors duration-300"
+            className="inline-flex items-center gap-3 group text-[11px] tracking-[0.22em] uppercase text-[#f4f4f5] font-inter font-light hover:text-[#a1a1aa] transition-colors duration-300"
           >
             Explore the Menu
             <svg
@@ -155,7 +155,7 @@ export const Hero = () => {
             />
           </svg>
         </motion.div>
-        <p className="text-[9px] tracking-[0.28em] uppercase text-[#3f3f46] font-['Inter'] rotate-90 origin-center mt-3">
+        <p className="text-[9px] tracking-[0.28em] uppercase text-[#3f3f46] font-inter rotate-90 origin-center mt-3">
           Scroll
         </p>
       </motion.div>
