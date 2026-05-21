@@ -2,10 +2,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ─────────────────────────────────────────────
-// SMOOTH SCROLL HELPER
-// ─────────────────────────────────────────────
-
 function scrollToSection(id: string) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -25,7 +21,7 @@ export const Navbar = () => {
   const navLinks: { label: string; sectionId: string }[] = [
     { label: "Menu", sectionId: "menu" },
     { label: "Experience", sectionId: "experience" },
-    { label: "Reserve", sectionId: "reserve" }, // ← add this
+    { label: "Reserve", sectionId: "reserve" },
     { label: "Visit", sectionId: "visit" },
   ];
 
@@ -45,7 +41,7 @@ export const Navbar = () => {
         }`}
       >
         <nav className="max-w-7xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
-          {/* Wordmark — clicks back to top */}
+          {/* Wordmark */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="font-cormorant text-xl tracking-[0.18em] text-[#f4f4f5] uppercase select-none bg-transparent border-none cursor-pointer"
@@ -68,11 +64,16 @@ export const Navbar = () => {
             ))}
           </ul>
 
-          {/* Right — Find Us + Hamburger */}
+          {/* Right — Find Us (FIX 4: reduced prominence) + Hamburger */}
           <div className="flex items-center gap-5">
+            {/*
+              FIX 4 — "Find Us" de-emphasised:
+              removed explicit border, now uses text-only style matching nav links.
+              Still clickable, just no longer competes with Reserve Table CTA.
+            */}
             <button
               onClick={() => handleNav("visit")}
-              className="hidden md:inline-flex items-center h-8 px-5 border border-[#27272a] hover:border-[#f4f4f5]/40 text-[10px] tracking-[0.22em] uppercase text-[#a1a1aa] hover:text-[#f4f4f5] transition-all duration-300 font-inter font-light bg-transparent cursor-pointer"
+              className="hidden md:inline-flex items-center text-[10px] tracking-[0.22em] uppercase text-[#52525b] hover:text-[#a1a1aa] transition-colors duration-300 font-inter font-light bg-transparent border-none cursor-pointer"
             >
               Find Us
             </button>
@@ -84,27 +85,19 @@ export const Navbar = () => {
               aria-label="Toggle menu"
             >
               <motion.span
-                animate={
-                  mobileOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }
-                }
+                animate={mobileOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
                 transition={{ duration: 0.3 }}
                 className="block h-px bg-[#f4f4f5] origin-center"
                 style={{ width: "24px" }}
               />
               <motion.span
-                animate={
-                  mobileOpen
-                    ? { opacity: 0, scaleX: 0 }
-                    : { opacity: 1, scaleX: 1 }
-                }
+                animate={mobileOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
                 transition={{ duration: 0.2 }}
                 className="block h-px bg-[#a1a1aa] origin-right"
                 style={{ width: "16px" }}
               />
               <motion.span
-                animate={
-                  mobileOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }
-                }
+                animate={mobileOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
                 transition={{ duration: 0.3 }}
                 className="block h-px bg-[#f4f4f5] origin-center"
                 style={{ width: "24px" }}
@@ -118,7 +111,6 @@ export const Navbar = () => {
       <AnimatePresence>
         {mobileOpen && (
           <>
-            {/* Backdrop */}
             <motion.div
               key="backdrop"
               initial={{ opacity: 0 }}
@@ -129,20 +121,14 @@ export const Navbar = () => {
               className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
             />
 
-            {/* Drawer */}
             <motion.div
               key="drawer"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{
-                type: "tween",
-                ease: [0.76, 0, 0.24, 1],
-                duration: 0.45,
-              }}
+              transition={{ type: "tween", ease: [0.76, 0, 0.24, 1], duration: 0.45 }}
               className="fixed top-0 right-0 bottom-0 z-50 w-72 bg-[#111112] border-l border-[#27272a] flex flex-col md:hidden"
             >
-              {/* Close */}
               <div className="flex justify-end p-6">
                 <button
                   onClick={() => setMobileOpen(false)}
@@ -150,16 +136,11 @@ export const Navbar = () => {
                   aria-label="Close menu"
                 >
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                    <path
-                      d="M1 1L17 17M17 1L1 17"
-                      stroke="currentColor"
-                      strokeWidth="1.2"
-                    />
+                    <path d="M1 1L17 17M17 1L1 17" stroke="currentColor" strokeWidth="1.2" />
                   </svg>
                 </button>
               </div>
 
-              {/* Links */}
               <nav className="flex flex-col gap-0 px-8 mt-4">
                 {navLinks.map((link, i) => (
                   <motion.button
@@ -174,17 +155,13 @@ export const Navbar = () => {
                       {link.label}
                     </span>
                     <svg
-                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-0 group-hover:translate-x-1"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                       width="14"
                       height="14"
                       viewBox="0 0 14 14"
                       fill="none"
                     >
-                      <path
-                        d="M1 7H13M8 2L13 7L8 12"
-                        stroke="currentColor"
-                        strokeWidth="1"
-                      />
+                      <path d="M1 7H13M8 2L13 7L8 12" stroke="currentColor" strokeWidth="1" />
                     </svg>
                   </motion.button>
                 ))}
@@ -194,13 +171,12 @@ export const Navbar = () => {
                   initial={{ opacity: 0, x: 16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.38, duration: 0.4 }}
-                  className="mt-8 self-start inline-flex items-center h-9 px-6 border border-[#27272a] hover:border-[#f4f4f5]/40 text-[10px] tracking-[0.22em] uppercase text-[#a1a1aa] hover:text-[#f4f4f5] transition-all duration-300 font-inter bg-transparent cursor-pointer"
+                  className="mt-8 self-start text-[10px] tracking-[0.22em] uppercase text-[#52525b] hover:text-[#a1a1aa] transition-colors duration-300 font-inter bg-transparent border-none cursor-pointer"
                 >
                   Find Us
                 </motion.button>
               </nav>
 
-              {/* Footer tag */}
               <div className="mt-auto px-8 pb-10">
                 <p className="text-[10px] tracking-[0.2em] uppercase text-[#3f3f46] font-inter">
                   Rourkela, Odisha

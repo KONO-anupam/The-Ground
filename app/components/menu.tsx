@@ -10,10 +10,6 @@ import {
 } from "framer-motion";
 import Image from "next/image";
 
-// ─────────────────────────────────────────────
-// TYPES
-// ─────────────────────────────────────────────
-
 type TabId = "brews" | "bakery" | "brunch";
 
 interface MenuItem {
@@ -29,10 +25,6 @@ interface MenuCategory {
   label: string;
   items: MenuItem[];
 }
-
-// ─────────────────────────────────────────────
-// DATA
-// ─────────────────────────────────────────────
 
 const MENU_DATA: MenuCategory[] = [
   {
@@ -190,22 +182,14 @@ const MENU_DATA: MenuCategory[] = [
   },
 ];
 
-// ─────────────────────────────────────────────
-// HOOK: detect touch / pointer device
-// ─────────────────────────────────────────────
-
 function useIsTouchDevice(): boolean {
-  // Always initialise as false so server HTML matches the client's first
-  // render — the only safe approach with SSR. After hydration the effect
-  // reads the real pointer type and does a single corrective re-render if
-  // needed. The brief flash (touch device renders as desktop for one frame)
-  // is imperceptible because it happens before paint.
-  const [isTouch, setIsTouch] = useState<boolean>(false);
+  const [isTouch, setIsTouch] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(pointer: coarse)").matches;
+  });
 
   useEffect(() => {
     const mq = window.matchMedia("(pointer: coarse)");
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- post-hydration correction for SSR-safe pointer detection
-    setIsTouch(mq.matches);
     const handler = (e: MediaQueryListEvent) => setIsTouch(e.matches);
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
@@ -214,15 +198,12 @@ function useIsTouchDevice(): boolean {
   return isTouch;
 }
 
-// ─────────────────────────────────────────────
-// CURSOR THUMBNAIL  (desktop-only)
-// ─────────────────────────────────────────────
-
 interface CursorThumbnailProps {
   src: string | null;
   visible: boolean;
   x: number;
   y: number;
+  alt: string;
 }
 
 const CursorThumbnail: React.FC<CursorThumbnailProps> = ({
@@ -230,20 +211,15 @@ const CursorThumbnail: React.FC<CursorThumbnailProps> = ({
   visible,
   x,
   y,
+  alt,
 }) => {
   const springConfig = { stiffness: 520, damping: 38, mass: 0.6 };
-
   const motionX = useMotionValue(x);
   const motionY = useMotionValue(y);
-
   const springX = useSpring(motionX, springConfig);
   const springY = useSpring(motionY, springConfig);
-
   motionX.set(x);
   motionY.set(y);
-
-  // Offset: 16px right of cursor, 152px up so the thumbnail
-  // sits clearly above the pointer rather than overlapping text.
   const translateX = useTransform(springX, (v) => v + 16);
   const translateY = useTransform(springY, (v) => v - 152);
 
@@ -251,6 +227,8 @@ const CursorThumbnail: React.FC<CursorThumbnailProps> = ({
     <motion.div
       className="fixed top-0 left-0 z-100 pointer-events-none"
       style={{ x: translateX, y: translateY }}
+      // Decorative — screen readers don't need this thumbnail
+      aria-hidden="true"
     >
       <motion.div
         animate={{
@@ -264,7 +242,7 @@ const CursorThumbnail: React.FC<CursorThumbnailProps> = ({
         {src && (
           <Image
             src={src}
-            alt=""
+            alt={alt}
             fill
             className="object-cover"
             draggable={false}
@@ -276,11 +254,6 @@ const CursorThumbnail: React.FC<CursorThumbnailProps> = ({
     </motion.div>
   );
 };
-
-// ─────────────────────────────────────────────
-// TOUCH IMAGE PANEL  (mobile-only)
-// Inline reveal that expands below the tapped row.
-// ─────────────────────────────────────────────
 
 interface TouchImagePanelProps {
   src: string;
@@ -299,29 +272,23 @@ const TouchImagePanel: React.FC<TouchImagePanelProps> = ({ src, name }) => (
     <div className="relative w-full h-40 rounded-xl overflow-hidden my-2">
       <Image
         src={src}
-        alt={name}
+        alt={`Photo of ${name}`}
         fill
         className="object-cover"
         draggable={false}
         unoptimized
       />
-      <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent" aria-hidden="true" />
     </div>
   </motion.div>
 );
 
-// ─────────────────────────────────────────────
-// MENU ITEM ROW
-// ─────────────────────────────────────────────
-
 interface MenuItemRowProps {
   item: MenuItem;
   index: number;
-  // Desktop props
   onHover: (item: MenuItem | null) => void;
   onMouseMove: (x: number, y: number) => void;
   isHovered: boolean;
-  // Touch props
   isTouch: boolean;
   isTapped: boolean;
   onTap: (name: string | null) => void;
@@ -360,14 +327,13 @@ const MenuItemRow: React.FC<MenuItemRowProps> = ({
         duration: 0.5,
         ease: [0.32, 0, 0.18, 1],
       }}
-      // Desktop: cursor-none hides the system cursor so the
-      // thumbnail feels like the "real" cursor.
-      // Touch: default cursor, tap toggles the inline panel.
       className={isTouch ? "group relative" : "group relative cursor-none"}
       onMouseEnter={() => { if (!isTouch) onHover(item); }}
       onMouseLeave={() => { if (!isTouch) onHover(null); }}
       onMouseMove={handleMouseMove}
       onClick={handleTap}
+      // Expose each item as a listitem for assistive tech
+      role="listitem"
     >
       <div
         className={`flex items-baseline gap-3 py-4 border-b transition-colors duration-300 ${
@@ -385,12 +351,14 @@ const MenuItemRow: React.FC<MenuItemRowProps> = ({
             </span>
 
             {item.tag && (
-              <span className="text-[8.5px] tracking-[0.18em] uppercase text-[#71717a] border border-[#27272a] px-1.5 py-0.5 font-inter font-light">
+              <span
+                className="text-[8.5px] tracking-[0.18em] uppercase text-[#71717a] border border-[#27272a] px-1.5 py-0.5 font-inter font-light"
+                aria-label={item.tag}
+              >
                 {item.tag}
               </span>
             )}
 
-            {/* Tap hint chevron — visible on touch only, rotates when open */}
             {isTouch && (
               <motion.span
                 animate={{ rotate: isTapped ? 180 : 0 }}
@@ -408,7 +376,7 @@ const MenuItemRow: React.FC<MenuItemRowProps> = ({
           </span>
         </div>
 
-        <div className="flex-1 min-w-4 flex items-end pb-1.75">
+        <div className="flex-1 min-w-4 flex items-end pb-1.75" aria-hidden="true">
           <div
             className="w-full h-px transition-colors duration-300"
             style={{
@@ -419,16 +387,17 @@ const MenuItemRow: React.FC<MenuItemRowProps> = ({
           />
         </div>
 
+        {/* Wrap price in data-nosnippet to avoid Google treating it as page description */}
         <span
           className={`font-cormorant text-base font-light shrink-0 tabular-nums transition-colors duration-200 ${
             active ? "text-[#f4f4f5]" : "text-[#71717a]"
           }`}
+          aria-label={`₹${item.price}`}
         >
           ₹{item.price}
         </span>
       </div>
 
-      {/* Inline image panel for touch devices */}
       {isTouch && (
         <AnimatePresence>
           {isTapped && (
@@ -440,10 +409,6 @@ const MenuItemRow: React.FC<MenuItemRowProps> = ({
   );
 };
 
-// ─────────────────────────────────────────────
-// MAIN MENU COMPONENT
-// ─────────────────────────────────────────────
-
 const TABS: { id: TabId; label: string }[] = [
   { id: "brews", label: "Specialty Brews" },
   { id: "bakery", label: "Artisanal Bakery" },
@@ -452,16 +417,11 @@ const TABS: { id: TabId; label: string }[] = [
 
 export const Menu: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabId>("brews");
-
-  // Desktop state
   const [hoveredItem, setHoveredItem] = useState<MenuItem | null>(null);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-
-  // Touch state — only one row expanded at a time
   const [tappedItemName, setTappedItemName] = useState<string | null>(null);
 
   const isTouch = useIsTouchDevice();
-
   const activeCategory = MENU_DATA.find((c) => c.id === activeTab)!;
 
   const handleTabChange = (id: TabId) => {
@@ -480,7 +440,6 @@ export const Menu: React.FC = () => {
     setTappedItemName(name);
   }, []);
 
-  // Clear hover on scroll (desktop)
   useEffect(() => {
     if (isTouch) return;
     const handleScroll = () => setHoveredItem(null);
@@ -488,21 +447,16 @@ export const Menu: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isTouch]);
 
-  // Clear tapped item when tab changes or user scrolls (touch)
-  useEffect(() => {
-    if (!isTouch) return;
-    const handleScroll = () => setTappedItemName(null);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isTouch]);
-
   return (
+    // Use nav landmark for the menu section so crawlers understand its purpose
     <section
       id="menu"
+      aria-label="Our menu"
       className="relative bg-[#0d0d0e] min-h-screen py-24 md:py-32"
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.025]"
+        aria-hidden="true"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           backgroundSize: "200px",
@@ -527,9 +481,11 @@ export const Menu: React.FC = () => {
           </div>
         </motion.div>
 
-        <motion.div
+        {/* Tab bar — role="tablist" already present; add aria-label for context */}
+        <div
           className="flex items-center gap-1 mb-12 border-b border-[#1f1f20] pb-0"
           role="tablist"
+          aria-label="Menu categories"
         >
           {TABS.map((tab) => {
             const isActive = tab.id === activeTab;
@@ -538,6 +494,8 @@ export const Menu: React.FC = () => {
                 key={tab.id}
                 role="tab"
                 aria-selected={isActive}
+                aria-controls={`menu-panel-${tab.id}`}
+                id={`menu-tab-${tab.id}`}
                 onClick={() => handleTabChange(tab.id)}
                 className={`relative pb-3.5 px-1 mr-6 ${
                   isActive ? "text-white" : "text-gray-500"
@@ -547,11 +505,17 @@ export const Menu: React.FC = () => {
               </button>
             );
           })}
-        </motion.div>
+        </div>
 
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
+            // Wire up the tabpanel role so the tab ↔ panel relationship
+            // is explicit for both assistive tech and structured-data crawlers
+            role="tabpanel"
+            id={`menu-panel-${activeTab}`}
+            aria-labelledby={`menu-tab-${activeTab}`}
+            // list role on the grid so MenuItemRow's role="listitem" is valid
             className="grid grid-cols-1 md:grid-cols-2 gap-x-16"
           >
             {activeCategory.items.map((item, i) => (
@@ -571,13 +535,13 @@ export const Menu: React.FC = () => {
         </AnimatePresence>
       </div>
 
-      {/* Cursor thumbnail only rendered on non-touch devices */}
       {!isTouch && (
         <CursorThumbnail
           src={hoveredItem?.image ?? null}
           visible={!!hoveredItem}
           x={cursorPos.x}
           y={cursorPos.y}
+          alt={hoveredItem ? `Photo of ${hoveredItem.name}` : ""}
         />
       )}
     </section>

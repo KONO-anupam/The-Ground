@@ -10,14 +10,18 @@ const headlineLines = [
 
 export const Hero = () => {
   return (
-    <section className="relative w-full h-screen min-h-150 flex flex-col overflow-hidden bg-[#0d0d0e]">
+    <section
+      className="relative w-full h-screen min-h-150 flex flex-col overflow-hidden bg-[#0d0d0e]"
+      aria-label="The Ground — specialty coffee bar in Rourkela"
+    >
       {/* ── Image Backdrop ── */}
       <div className="absolute inset-0 z-0">
         <Image
           src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1920&q=90&auto=format&fit=crop"
-          alt="The Ground espresso bar interior"
+          alt="Interior of The Ground espresso bar in Rourkela — warm lighting, minimal décor"
           fill
           priority
+          fetchPriority="high"
           quality={90}
           className="object-cover object-center"
           sizes="100vw"
@@ -28,7 +32,7 @@ export const Hero = () => {
         {/* Base darkening */}
         <div className="absolute inset-0 bg-black/60 z-10" />
 
-        {/* Bottom-weighted gradient — sharpens text legibility without killing the photo */}
+        {/* Bottom-weighted gradient */}
         <div
           className="absolute inset-0 z-20 pointer-events-none"
           style={{
@@ -47,8 +51,8 @@ export const Hero = () => {
         />
       </div>
 
-      {/* ── Content — lower third ── */}
-      <div className="relative z-30 mt-auto px-6 md:px-14 pb-12 md:pb-20 max-w-4xl">
+      {/* ── Content ── */}
+      <div className="relative z-30 flex flex-col justify-center md:justify-end md:mt-auto px-6 md:px-14 pt-24 pb-8 md:pt-0 md:pb-20 h-full md:h-auto max-w-4xl">
 
         {/* Eyebrow */}
         <motion.p
@@ -60,7 +64,7 @@ export const Hero = () => {
           Single Origin · Small Batch
         </motion.p>
 
-        {/* Headline — reduced ~12% from previous clamp, tighter line-height */}
+        {/* Headline — single h1, text present in DOM from SSR */}
         <h1 className="font-cormorant font-light leading-[1.06] overflow-hidden">
           {headlineLines.map(({ text, delay }, i) => (
             <span key={i} className="block overflow-hidden">
@@ -74,10 +78,13 @@ export const Hero = () => {
                   ease: [0.76, 0, 0.24, 1],
                 }}
                 style={{
-                  fontSize: "clamp(1.75rem, 6.5vw, 5.6rem)",
+                  fontSize:
+                    i === 2
+                      ? "clamp(1.65rem, 5.6vw, 4.9rem)"
+                      : "clamp(1.75rem, 6.2vw, 5.3rem)",
                   color:
                     i === 2
-                      ? "rgba(244,244,245,0.5)"
+                      ? "rgba(244,244,245,0.45)"
                       : "rgba(244,244,245,0.93)",
                   fontStyle: i === 1 ? "italic" : "normal",
                   letterSpacing: "-0.015em",
@@ -89,16 +96,17 @@ export const Hero = () => {
           ))}
         </h1>
 
-        {/* Hours */}
+        {/* Hours — wrapped in time element for semantic markup */}
         <motion.div
           initial={{ opacity: 0, x: -12 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 1.3, duration: 0.6 }}
           className="flex items-center gap-4 mt-6 md:mt-7"
         >
-          <span className="block w-8 h-px bg-[#3f3f46]" />
+          <span className="block w-8 h-px bg-[#3f3f46]" aria-hidden="true" />
           <p className="text-[11px] tracking-[0.22em] uppercase text-[#a1a1aa] font-inter font-light">
-            Open daily — 7am to 10pm
+            Open daily —{" "}
+            <time dateTime="07:00">7am</time> to <time dateTime="22:00">10pm</time>
           </p>
         </motion.div>
 
@@ -109,13 +117,12 @@ export const Hero = () => {
           transition={{ delay: 1.5, duration: 0.55 }}
           className="mt-7 md:mt-8 flex flex-row items-center gap-4 md:gap-6"
         >
-          {/* PRIMARY — bordered button */}
           <a
             href="#reserve"
             className="
               inline-flex items-center justify-center
               px-6 py-3 md:px-7 md:py-3.5
-              border border-[#f4f4f5]/70
+              border border-[#f4f4f5]/90
               text-[11px] tracking-[0.2em] uppercase
               text-[#f4f4f5] font-inter font-light
               hover:bg-[#f4f4f5]/8 hover:border-[#ffffff]
@@ -124,10 +131,9 @@ export const Hero = () => {
               min-h-[44px] md:min-h-0
             "
           >
-            Reserve Table
+            Reserve a Table
           </a>
 
-          {/* SECONDARY — text link */}
           <a
             href="#menu"
             className="
@@ -147,6 +153,7 @@ export const Hero = () => {
               height="10"
               viewBox="0 0 18 12"
               fill="none"
+              aria-hidden="true"
             >
               <path
                 d="M0 6H16M11 1L16 6L11 11"
@@ -164,6 +171,7 @@ export const Hero = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 2, duration: 0.8 }}
         className="absolute bottom-8 right-8 md:right-12 z-30 flex flex-col items-center gap-2"
+        aria-hidden="true"
       >
         <motion.div
           animate={{ y: [0, 5, 0] }}

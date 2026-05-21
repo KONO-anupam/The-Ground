@@ -3,10 +3,6 @@
 import { useState, useMemo, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 
-// ─────────────────────────────────────────────
-// CONSTANTS
-// ─────────────────────────────────────────────
-
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",
@@ -27,16 +23,8 @@ const SLOTS: { t: string; avail: boolean }[] = [
   { t: "8:00 PM",  avail: true  }, { t: "9:00 PM",  avail: true  },
 ];
 
-// ─────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────
-
 const genRef = (): string =>
   "TG-" + Math.random().toString(36).slice(2, 7).toUpperCase();
-
-// ─────────────────────────────────────────────
-// STEP LABEL
-// ─────────────────────────────────────────────
 
 const StepLabel: React.FC<{
   n: string;
@@ -52,13 +40,9 @@ const StepLabel: React.FC<{
         optional
       </span>
     )}
-    <span className="h-px flex-1 bg-[#1c1c1e]" />
+    <span className="h-px flex-1 bg-[#1c1c1e]" aria-hidden="true" />
   </div>
 );
-
-// ─────────────────────────────────────────────
-// SUCCESS VIEW
-// ─────────────────────────────────────────────
 
 interface SuccessProps {
   dateLabel: string;
@@ -82,38 +66,33 @@ const SuccessView: React.FC<SuccessProps> = ({
     exit={{ opacity: 0 }}
     transition={{ duration: 0.5, ease: [0.32, 0, 0.18, 1] }}
     className="flex min-h-[60vh] flex-col items-center justify-center py-12 text-center"
+    // Announce confirmation to screen readers immediately on mount
+    role="status"
+    aria-live="polite"
+    aria-label={`Reservation confirmed for ${guests} guest${guests > 1 ? "s" : ""} on ${dateLabel} at ${slot}. Booking reference ${bookingRef}.`}
   >
-    {/* Animated checkmark circle */}
+    {/* Animated checkmark — decorative */}
     <motion.div
       initial={{ scale: 0.6, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ duration: 0.55, ease: [0.32, 0, 0.18, 1] }}
       className="relative mb-10 flex h-20 w-20 items-center justify-center"
+      aria-hidden="true"
     >
-      {/* Outer ring — draws itself */}
-      <svg
-        className="absolute inset-0"
-        viewBox="0 0 80 80"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg className="absolute inset-0" viewBox="0 0 80 80" fill="none">
         <motion.circle
           cx="40" cy="40" r="38"
-          stroke="#27272a"
-          strokeWidth="0.8"
+          stroke="#27272a" strokeWidth="0.8"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 0.9, ease: "easeOut" }}
         />
       </svg>
-      {/* Checkmark */}
       <svg width="26" height="20" viewBox="0 0 26 20" fill="none">
         <motion.path
           d="M1 10L9 18L25 1"
-          stroke="#f4f4f5"
-          strokeWidth="1.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          stroke="#f4f4f5" strokeWidth="1.2"
+          strokeLinecap="round" strokeLinejoin="round"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
           transition={{ delay: 0.55, duration: 0.55, ease: "easeOut" }}
@@ -121,7 +100,6 @@ const SuccessView: React.FC<SuccessProps> = ({
       </svg>
     </motion.div>
 
-    {/* Headline */}
     <motion.h2
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -142,7 +120,6 @@ const SuccessView: React.FC<SuccessProps> = ({
       We look forward to hosting you.
     </motion.p>
 
-    {/* Booking summary card */}
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -165,7 +142,6 @@ const SuccessView: React.FC<SuccessProps> = ({
       ))}
     </motion.div>
 
-    {/* Ref + reset */}
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -176,7 +152,6 @@ const SuccessView: React.FC<SuccessProps> = ({
         Booking ref&nbsp;·&nbsp;{bookingRef}
       </p>
 
-      {/* Policy notice */}
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -187,8 +162,7 @@ const SuccessView: React.FC<SuccessProps> = ({
         time before being released to walk-in guests.
       </motion.p>
 
-      {/* Divider */}
-      <span className="block h-px w-8 bg-[#1c1c1e]" />
+      <span className="block h-px w-8 bg-[#1c1c1e]" aria-hidden="true" />
 
       <button
         onClick={onReset}
@@ -199,10 +173,6 @@ const SuccessView: React.FC<SuccessProps> = ({
     </motion.div>
   </motion.div>
 );
-
-// ─────────────────────────────────────────────
-// MAIN WIDGET
-// ─────────────────────────────────────────────
 
 export const ReservationWidget: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -223,25 +193,21 @@ export const ReservationWidget: React.FC = () => {
 
   const handleConfirm = () => {
     setConfirmed(true);
-    // Wait for the form exit (350ms) + success mount to settle, then scroll
     setTimeout(() => {
       sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 400);
   };
 
-  const daysInMonth = new Date(
-    today.getFullYear(),
-    today.getMonth() + 1,
-    0
-  ).getDate();
-  const firstDow = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    1
-  ).getDay();
+  const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+  const firstDow = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
 
   const dateLabel = selectedDate
     ? `${DAY_NAMES[selectedDate.getDay()]} ${selectedDate.getDate()} ${MONTH_SHORT[selectedDate.getMonth()]}`
+    : "";
+
+  // ISO date string for the <time> element (YYYY-MM-DD)
+  const dateISO = selectedDate
+    ? `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(2, "0")}`
     : "";
 
   const canSubmit = Boolean(selectedDate && selectedSlot);
@@ -258,6 +224,7 @@ export const ReservationWidget: React.FC = () => {
     <section
       id="reserve"
       ref={sectionRef}
+      aria-label="Reserve a table at The Ground"
       className="relative bg-[#0d0d0e] text-[#f4f4f5] overflow-hidden py-24 md:py-32"
     >
       {/* Grain */}
@@ -270,18 +237,17 @@ export const ReservationWidget: React.FC = () => {
         }}
       />
 
-      {/* Top border rule */}
       <motion.div
         initial={{ scaleX: 0 }}
         animate={inView ? { scaleX: 1 } : { scaleX: 0 }}
         transition={{ duration: 1.1, ease: [0.76, 0, 0.24, 1] }}
         className="absolute top-0 left-0 right-0 h-px bg-[#1c1c1e] origin-left"
+        aria-hidden="true"
       />
 
       <div className="relative max-w-2xl mx-auto px-6 md:px-10">
         <AnimatePresence mode="wait">
           {!confirmed ? (
-            // ─── FORM ───
             <motion.div
               key="form"
               initial={{ opacity: 0 }}
@@ -289,7 +255,6 @@ export const ReservationWidget: React.FC = () => {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.35, ease: [0.32, 0, 0.18, 1] }}
             >
-              {/* Header */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -311,7 +276,7 @@ export const ReservationWidget: React.FC = () => {
                 </h2>
               </motion.div>
 
-              {/* ── STEP 1 — Date ── */}
+              {/* STEP 1 — Date */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -320,13 +285,12 @@ export const ReservationWidget: React.FC = () => {
               >
                 <StepLabel n="01" label="Choose a date" />
 
-                {/* Month label */}
                 <p className="font-inter text-[9px] font-light uppercase tracking-[0.22em] text-[#52525b] mb-4">
                   {MONTH_NAMES[today.getMonth()]} {today.getFullYear()}
                 </p>
 
-                {/* Day headers */}
-                <div className="grid grid-cols-7 gap-1 mb-1">
+                {/* Day headers — aria-hidden; the button labels carry the accessible info */}
+                <div className="grid grid-cols-7 gap-1 mb-1" aria-hidden="true">
                   {DAY_NAMES.map((d) => (
                     <p
                       key={d}
@@ -337,20 +301,21 @@ export const ReservationWidget: React.FC = () => {
                   ))}
                 </div>
 
-                {/* Calendar grid */}
-                <div className="grid grid-cols-7 gap-1">
+                {/* Calendar grid — wrap in a group role so screen readers announce it as a date picker */}
+                <div
+                  className="grid grid-cols-7 gap-1"
+                  role="group"
+                  aria-label={`Select a date in ${MONTH_NAMES[today.getMonth()]} ${today.getFullYear()}`}
+                >
                   {Array.from({ length: firstDow }, (_, i) => (
-                    <div key={`empty-${i}`} />
+                    <div key={`empty-${i}`} aria-hidden="true" />
                   ))}
                   {Array.from({ length: daysInMonth }, (_, i) => {
                     const day = i + 1;
-                    const date = new Date(
-                      today.getFullYear(),
-                      today.getMonth(),
-                      day
-                    );
+                    const date = new Date(today.getFullYear(), today.getMonth(), day);
                     const isPast = date < today;
                     const isSelected = selectedDate?.getDate() === day;
+                    const fullLabel = `${DAY_NAMES[date.getDay()]} ${day} ${MONTH_NAMES[today.getMonth()]}`;
 
                     return (
                       <button
@@ -360,6 +325,8 @@ export const ReservationWidget: React.FC = () => {
                           setSelectedDate(date);
                           setSelectedSlot(null);
                         }}
+                        aria-label={isPast ? `${fullLabel}, unavailable` : fullLabel}
+                        aria-pressed={isSelected}
                         className={`
                           py-2.5 text-center font-cormorant text-base font-light border
                           transition-all duration-200 focus:outline-none
@@ -379,7 +346,7 @@ export const ReservationWidget: React.FC = () => {
                 </div>
               </motion.div>
 
-              {/* ── STEP 2 — Time ── */}
+              {/* STEP 2 — Time */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -387,12 +354,18 @@ export const ReservationWidget: React.FC = () => {
                 className="mb-10"
               >
                 <StepLabel n="02" label="Pick a time" />
-                <div className="flex flex-wrap gap-1.5">
+                <div
+                  className="flex flex-wrap gap-1.5"
+                  role="group"
+                  aria-label="Available time slots"
+                >
                   {SLOTS.map((s) => (
                     <button
                       key={s.t}
                       disabled={!s.avail}
                       onClick={() => setSelectedSlot(s.t)}
+                      aria-label={s.avail ? s.t : `${s.t}, unavailable`}
+                      aria-pressed={selectedSlot === s.t}
                       className={`
                         px-4 py-2.5 font-inter text-[10px] font-light uppercase
                         tracking-[0.12em] border transition-all duration-200 focus:outline-none
@@ -411,7 +384,7 @@ export const ReservationWidget: React.FC = () => {
                 </div>
               </motion.div>
 
-              {/* ── STEP 3 — Guests ── */}
+              {/* STEP 3 — Guests */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -422,7 +395,7 @@ export const ReservationWidget: React.FC = () => {
                 <div className="flex items-center gap-5">
                   <button
                     onClick={() => setGuests((g) => Math.max(1, g - 1))}
-                    aria-label="Decrease guests"
+                    aria-label="Decrease number of guests"
                     className="flex h-9 w-9 items-center justify-center border border-[#27272a] font-cormorant text-xl text-[#71717a] transition-all duration-200 hover:border-[#a1a1aa] hover:text-[#f4f4f5] focus:outline-none"
                   >
                     −
@@ -430,23 +403,26 @@ export const ReservationWidget: React.FC = () => {
                   <span
                     className="min-w-[2ch] text-center font-cormorant font-light text-[#f4f4f5]"
                     style={{ fontSize: "clamp(2.2rem, 4vw, 3rem)", lineHeight: 1 }}
+                    aria-live="polite"
+                    aria-atomic="true"
+                    aria-label={`${guests} ${guests === 1 ? "guest" : "guests"}`}
                   >
                     {guests}
                   </span>
                   <button
                     onClick={() => setGuests((g) => Math.min(12, g + 1))}
-                    aria-label="Increase guests"
+                    aria-label="Increase number of guests"
                     className="flex h-9 w-9 items-center justify-center border border-[#27272a] font-cormorant text-xl text-[#71717a] transition-all duration-200 hover:border-[#a1a1aa] hover:text-[#f4f4f5] focus:outline-none"
                   >
                     +
                   </button>
-                  <span className="font-inter text-[10px] font-light uppercase tracking-[0.2em] text-[#52525b]">
+                  <span className="font-inter text-[10px] font-light uppercase tracking-[0.2em] text-[#52525b]" aria-hidden="true">
                     {guests === 1 ? "guest" : "guests"}
                   </span>
                 </div>
               </motion.div>
 
-              {/* ── STEP 4 — Notes ── */}
+              {/* STEP 4 — Notes */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -459,6 +435,7 @@ export const ReservationWidget: React.FC = () => {
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="Dietary requirements, celebrations, seating preference…"
+                  aria-label="Additional notes for your reservation"
                   className="
                     w-full resize-none bg-transparent px-4 py-3
                     font-inter text-xs font-light tracking-wide text-[#a1a1aa]
@@ -469,7 +446,7 @@ export const ReservationWidget: React.FC = () => {
                 />
               </motion.div>
 
-              {/* ── Booking summary ── */}
+              {/* Booking summary */}
               <AnimatePresence>
                 {canSubmit && (
                   <motion.div
@@ -478,17 +455,19 @@ export const ReservationWidget: React.FC = () => {
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.35 }}
                     className="mb-8 border-t border-[#1c1c1e] pt-6"
+                    aria-live="polite"
+                    aria-label={`Reservation summary: ${dateLabel} at ${selectedSlot}, ${guests} ${guests === 1 ? "guest" : "guests"}`}
                   >
                     <p className="font-inter text-[9px] font-light uppercase tracking-[0.22em] text-[#3f3f46] mb-4">
                       Summary
                     </p>
                     <div className="flex flex-wrap gap-8">
                       {[
-                        ["Date", dateLabel],
-                        ["Time", selectedSlot!],
-                        ["Guests", `${guests} ${guests === 1 ? "guest" : "guests"}`],
-                      ].map(([k, v]) => (
-                        <div key={k} className="flex flex-col gap-1.5">
+                        ["Date", dateLabel, dateISO ? <time dateTime={dateISO}>{dateLabel}</time> : dateLabel],
+                        ["Time", selectedSlot!, selectedSlot],
+                        ["Guests", `${guests} ${guests === 1 ? "guest" : "guests"}`, `${guests} ${guests === 1 ? "guest" : "guests"}`],
+                      ].map(([k, , v]) => (
+                        <div key={String(k)} className="flex flex-col gap-1.5">
                           <span className="font-inter text-[9px] font-light uppercase tracking-[0.22em] text-[#3f3f46]">
                             {k}
                           </span>
@@ -502,7 +481,7 @@ export const ReservationWidget: React.FC = () => {
                 )}
               </AnimatePresence>
 
-              {/* ── Submit CTA ── */}
+              {/* Submit CTA */}
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -511,6 +490,7 @@ export const ReservationWidget: React.FC = () => {
                 <button
                   disabled={!canSubmit}
                   onClick={handleConfirm}
+                  aria-disabled={!canSubmit}
                   className={`
                     group inline-flex items-center gap-3 border
                     px-8 py-3.5 font-inter text-[10px] font-light
@@ -527,17 +507,17 @@ export const ReservationWidget: React.FC = () => {
                   <svg
                     className={`transition-transform duration-300 ${canSubmit ? "group-hover:translate-x-1" : ""}`}
                     width="18" height="12" viewBox="0 0 18 12" fill="none"
+                    aria-hidden="true"
                   >
-                    <path
-                      d="M0 6H16M11 1L16 6L11 11"
-                      stroke="currentColor"
-                      strokeWidth="0.9"
-                    />
+                    <path d="M0 6H16M11 1L16 6L11 11" stroke="currentColor" strokeWidth="0.9" />
                   </svg>
                 </button>
 
                 {!canSubmit && (
-                  <p className="mt-3 font-inter text-[9px] font-light uppercase tracking-[0.18em] text-[#27272a]">
+                  <p
+                    className="mt-3 font-inter text-[9px] font-light uppercase tracking-[0.18em] text-[#27272a]"
+                    aria-live="polite"
+                  >
                     {!selectedDate
                       ? "Select a date to continue"
                       : "Select a time to continue"}
@@ -546,7 +526,6 @@ export const ReservationWidget: React.FC = () => {
               </motion.div>
             </motion.div>
           ) : (
-            // ─── SUCCESS ───
             <SuccessView
               dateLabel={dateLabel}
               slot={selectedSlot!}
