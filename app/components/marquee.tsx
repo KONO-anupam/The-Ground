@@ -1,4 +1,4 @@
-
+"use client";
 const PHRASES = [
   { text: "Roasted Weekly", outline: false },
   { text: "Ethically Sourced", outline: true },
@@ -10,12 +10,10 @@ const MarqueeUnit = () => (
     {PHRASES.map(({ text, outline }, i) => (
       <div key={i} className="flex items-center">
         <span
+          className="font-inter font-black uppercase"
           style={{
-            fontFamily: "var(--font-inter)",
-            fontWeight: 900,
             fontSize: "clamp(1.15rem, 3.2vw, 2rem)",
             letterSpacing: "0.18em",
-            textTransform: "uppercase",
             lineHeight: 1,
             ...(outline
               ? {
@@ -50,11 +48,9 @@ export const Marquee = () => {
           willChange: "transform",
         }}
       >
-        {/* Two identical copies — the second snaps back seamlessly */}
         <MarqueeUnit />
         <MarqueeUnit />
       </div>
-
       <style>{`
         @keyframes marquee-scroll {
           from { transform: translateX(0); }
@@ -64,3 +60,5 @@ export const Marquee = () => {
     </section>
   );
 };
+
+export default Marquee;

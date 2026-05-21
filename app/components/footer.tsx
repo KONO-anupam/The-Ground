@@ -15,9 +15,9 @@ function BackToTop() {
   return (
     <button
       onClick={handleClick}
-      className="group inline-flex items-center gap-2 text-[#52525b] hover:text-[#f4f4f5] transition-colors duration-300 text-[11px] tracking-[0.12em] uppercase font-light"
+      className="group inline-flex items-center gap-2 font-inter text-[11px] font-light uppercase tracking-[0.12em] text-[#52525b] hover:text-[#f4f4f5] transition-colors duration-300"
     >
-      <span className="block w-4 h-px bg-current transition-all duration-300 group-hover:w-6" />
+      <span className="block h-px w-4 bg-current transition-all duration-300 group-hover:w-6" />
       Back to Top
     </button>
   );
@@ -44,8 +44,8 @@ function InstagramIcon() {
 
 function HoursBlock() {
   return (
-    <div className="border-t border-[#27272a] pt-16 pb-16">
-      <p className="text-[10px] tracking-[0.2em] text-[#52525b] uppercase mb-8 font-light">
+    <div className="border-t border-[#27272a] pb-16 pt-16">
+      <p className="mb-8 font-inter text-[10px] font-light uppercase tracking-[0.2em] text-[#52525b]">
         Opening Hours
       </p>
 
@@ -53,23 +53,27 @@ function HoursBlock() {
         {DAYS_HOURS.map(({ days, hours }) => (
           <div
             key={days}
-            className="flex flex-col sm:flex-row sm:items-baseline gap-3 sm:gap-4"
+            className="flex flex-col gap-3 sm:flex-row sm:items-baseline sm:gap-4"
           >
-            <span className="text-[11px] tracking-[0.18em] text-[#71717a] uppercase font-light whitespace-nowrap">
+            <span className="font-inter text-[11px] font-light uppercase tracking-[0.18em] text-[#71717a] whitespace-nowrap">
               {days}
             </span>
 
-            {/* Divider only on larger screens */}
+            {/* Dotted connector — desktop only */}
             <span className="hidden sm:block flex-1 border-b border-dotted border-[#27272a] mb-1" />
 
-            <span className="text-[32px] md:text-[42px] leading-none font-serif tracking-tight text-[#f4f4f5] tabular-nums">
+            {/* ── FIX: was font-serif (broken), now font-cormorant ── */}
+            <span
+              className="font-cormorant font-light leading-none tabular-nums text-[#f4f4f5]"
+              style={{ fontSize: "clamp(28px, 4vw, 42px)", letterSpacing: "-0.01em" }}
+            >
               {hours}
             </span>
           </div>
         ))}
       </div>
 
-      <p className="text-[10px] tracking-[0.15em] text-[#52525b] uppercase mt-6 font-light leading-relaxed">
+      <p className="mt-6 font-inter text-[10px] font-light uppercase leading-relaxed tracking-[0.15em] text-[#52525b]">
         Last order 30 min before close · Holiday hours may vary
       </p>
     </div>
@@ -80,42 +84,42 @@ function ContactBlock() {
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-[10px] tracking-[0.2em] text-[#52525b] uppercase mb-4 font-light">
+        <p className="mb-4 font-inter text-[10px] font-light uppercase tracking-[0.2em] text-[#52525b]">
           Find Us
         </p>
 
         <address className="not-italic space-y-1">
-          <p className="text-[15px] text-[#f4f4f5] font-light leading-relaxed">
+          <p className="font-cormorant text-[17px] font-light leading-relaxed text-[#f4f4f5]">
             The Ground
           </p>
-          <p className="text-[13px] text-[#a1a1aa] font-light leading-relaxed">
+          <p className="font-inter text-[13px] font-light leading-relaxed text-[#a1a1aa]">
             Civil Township, Sector 6
           </p>
-          <p className="text-[13px] text-[#a1a1aa] font-light leading-relaxed">
+          <p className="font-inter text-[13px] font-light leading-relaxed text-[#a1a1aa]">
             Rourkela, Odisha — 769 004
           </p>
         </address>
       </div>
 
       <div className="space-y-2">
-        <p className="text-[10px] tracking-[0.2em] text-[#52525b] uppercase mb-4 font-light">
+        <p className="mb-4 font-inter text-[10px] font-light uppercase tracking-[0.2em] text-[#52525b]">
           Get in Touch
         </p>
 
         <a
           href="mailto:hello@theground.in"
-          className="block text-[13px] text-[#a1a1aa] hover:text-[#f4f4f5] transition-colors duration-300 font-light tracking-wide group"
+          className="group block font-inter text-[13px] font-light tracking-wide text-[#a1a1aa] transition-colors duration-300 hover:text-[#f4f4f5]"
         >
-          <span className="border-b border-transparent group-hover:border-[#f4f4f5] transition-all duration-300 pb-px">
+          <span className="border-b border-transparent pb-px transition-all duration-300 group-hover:border-[#f4f4f5]">
             hello@theground.in
           </span>
         </a>
 
         <a
           href="tel:+916370000000"
-          className="block text-[13px] text-[#a1a1aa] hover:text-[#f4f4f5] transition-colors duration-300 font-light tracking-wide group"
+          className="group block font-inter text-[13px] font-light tracking-wide text-[#a1a1aa] transition-colors duration-300 hover:text-[#f4f4f5]"
         >
-          <span className="border-b border-transparent group-hover:border-[#f4f4f5] transition-all duration-300 pb-px">
+          <span className="border-b border-transparent pb-px transition-all duration-300 group-hover:border-[#f4f4f5]">
             +91 63700 00000
           </span>
         </a>
@@ -126,13 +130,13 @@ function ContactBlock() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Follow The Ground on Instagram"
-        className="inline-flex items-center gap-3 group"
+        className="group inline-flex items-center gap-3"
       >
-        <span className="w-5.5[22px] text-[#52525b] group-hover:text-[#f4f4f5] transition-all duration-500 group-hover:scale-110 transform-gpu block">
+        <span className="block w-[22px] text-[#52525b] transition-all duration-500 group-hover:scale-110 group-hover:text-[#f4f4f5]">
           <InstagramIcon />
         </span>
 
-        <span className="text-[10px] tracking-[0.18em] text-[#52525b] group-hover:text-[#a1a1aa] transition-colors duration-300 uppercase font-light">
+        <span className="font-inter text-[10px] font-light uppercase tracking-[0.18em] text-[#52525b] transition-colors duration-300 group-hover:text-[#a1a1aa]">
           @theground.rourkela
         </span>
       </a>
@@ -142,12 +146,12 @@ function ContactBlock() {
 
 function MapBlock() {
   return (
-    <div className="w-full h-full min-h-55 sm:min-h-60">
-      <p className="text-[10px] tracking-[0.2em] text-[#52525b] uppercase mb-4 font-light">
+    <div className="w-full">
+      <p className="mb-4 font-inter text-[10px] font-light uppercase tracking-[0.2em] text-[#52525b]">
         Navigate
       </p>
 
-      <div className="relative w-full h-55 sm:h-65 overflow-hidden border border-[#27272a]">
+      <div className="relative h-56 w-full overflow-hidden border border-[#27272a] sm:h-64">
         <iframe
           title="The Ground location map"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3677.6!2d84.8825!3d22.2271!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a201a4a3e5a0001%3A0x1!2sCivil+Township%2C+Rourkela%2C+Odisha!5e0!3m2!1sen!2sin!4v1699999999999!5m2!1sen!2sin"
@@ -162,13 +166,9 @@ function MapBlock() {
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
         />
-
         <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: "rgba(13,13,14,0.18)",
-            mixBlendMode: "multiply",
-          }}
+          className="pointer-events-none absolute inset-0"
+          style={{ background: "rgba(13,13,14,0.18)", mixBlendMode: "multiply" }}
         />
       </div>
 
@@ -176,9 +176,9 @@ function MapBlock() {
         href="https://maps.google.com/?q=Civil+Township+Rourkela+Odisha"
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 mt-3 text-[10px] tracking-[0.18em] text-[#52525b] hover:text-[#f4f4f5] transition-colors duration-300 uppercase font-light group"
+        className="group mt-3 inline-flex items-center gap-2 font-inter text-[10px] font-light uppercase tracking-[0.18em] text-[#52525b] transition-colors duration-300 hover:text-[#f4f4f5]"
       >
-        <span className="block w-3 h-px bg-current transition-all duration-300 group-hover:w-5" />
+        <span className="block h-px w-3 bg-current transition-all duration-300 group-hover:w-5" />
         Directions ↗
       </a>
     </div>
@@ -191,34 +191,38 @@ export default function TheGroundFooter() {
   return (
     <footer
       id="visit"
-      className="relative bg-[#0d0d0e] text-[#f4f4f5] overflow-hidden font-inter"
+      className="relative overflow-hidden bg-[#0d0d0e] text-[#f4f4f5]"
     >
-      {/* Wordmark band */}
-      <div className="px-6 md:px-12 lg:px-20 pt-16 pb-2">
+      {/* ── Wordmark band ── */}
+      {/* FIX: was font-serif (broken) — now font-cormorant */}
+      <div className="px-6 pb-2 pt-16 md:px-12 lg:px-20">
         <p
-          className="font-inter text-[clamp(42px,9vw,120px)] leading-none tracking-[-0.03em] text-[#18181b] font-serif select-none pointer-events-none"
+          className="pointer-events-none select-none font-cormorant font-light leading-none text-[#18181b]"
+          style={{
+            fontSize: "clamp(42px, 9vw, 120px)",
+            letterSpacing: "-0.03em",
+          }}
         >
           The Ground
         </p>
       </div>
 
-      {/* Main footer */}
+      {/* ── Main content ── */}
       <div className="px-6 md:px-12 lg:px-20">
         <HoursBlock />
 
         {/* Contact + Map */}
-        <div className="border-t border-[#27272a] pt-16 pb-16 grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20">
+        <div className="grid grid-cols-1 gap-12 border-t border-[#27272a] pb-16 pt-16 md:gap-20 lg:grid-cols-2">
           <ContactBlock />
           <MapBlock />
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="border-t border-[#1c1c1e] px-6 md:px-12 lg:px-20 py-5 flex flex-col sm:flex-row items-center sm:items-center justify-between gap-3 text-center sm:text-left">
-        <p className="text-[10px] tracking-[0.12em] text-[#3f3f46] font-light uppercase">
+      {/* ── Bottom bar ── */}
+      <div className="flex flex-col items-center justify-between gap-3 border-t border-[#1c1c1e] px-6 py-5 text-center sm:flex-row sm:text-left md:px-12 lg:px-20">
+        <p className="font-inter text-[10px] font-light uppercase tracking-[0.12em] text-[#3f3f46]">
           © {year} The Ground · Rourkela · All rights reserved
         </p>
-
         <BackToTop />
       </div>
     </footer>

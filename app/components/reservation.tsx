@@ -176,6 +176,17 @@ const SuccessView: React.FC<SuccessProps> = ({
         Booking ref&nbsp;·&nbsp;{bookingRef}
       </p>
 
+      {/* Policy notice */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 0.5 }}
+        className="mt-2 max-w-xs font-inter text-[9px] font-light leading-[1.7] tracking-[0.12em] text-[#3a3a3e] text-center"
+      >
+        Tables are held for a maximum of 15 minutes past your reserved
+        time before being released to walk-in guests.
+      </motion.p>
+
       {/* Divider */}
       <span className="block h-px w-8 bg-[#1c1c1e]" />
 
@@ -209,6 +220,14 @@ export const ReservationWidget: React.FC = () => {
   const [note, setNote] = useState("");
   const [confirmed, setConfirmed] = useState(false);
   const [bookingRef] = useState<string>(genRef);
+
+  const handleConfirm = () => {
+    setConfirmed(true);
+    // Wait for the form exit (350ms) + success mount to settle, then scroll
+    setTimeout(() => {
+      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 400);
+  };
 
   const daysInMonth = new Date(
     today.getFullYear(),
@@ -491,7 +510,7 @@ export const ReservationWidget: React.FC = () => {
               >
                 <button
                   disabled={!canSubmit}
-                  onClick={() => setConfirmed(true)}
+                  onClick={handleConfirm}
                   className={`
                     group inline-flex items-center gap-3 border
                     px-8 py-3.5 font-inter text-[10px] font-light

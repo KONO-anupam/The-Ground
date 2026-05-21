@@ -1,8 +1,15 @@
-// app/layout.tsx
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import type { Metadata } from "next";
+import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "./components/navbar";
 import TheGroundFooter from "./components/footer";
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["300", "400"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -12,12 +19,10 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400"],
-  variable: "--font-inter",
-  display: "swap",
-});
+export const metadata: Metadata = {
+  title: "The Ground",
+  description: "Single Origin · Small Batch · Rourkela",
+};
 
 export default function RootLayout({
   children,
@@ -25,8 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
-
+    <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
       <body>
         <Navbar/>
         {children}

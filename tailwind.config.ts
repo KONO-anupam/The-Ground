@@ -1,4 +1,3 @@
-// tailwind.config.ts
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -6,12 +5,11 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        cormorant: ["var(--font-cormorant)", "serif"],
         inter: ["var(--font-inter)", "sans-serif"],
+        cormorant: ["var(--font-cormorant)", "serif"],
       },
     },
   },
-  plugins: [],
 };
 
 export default config;
