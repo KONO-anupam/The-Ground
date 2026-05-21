@@ -174,7 +174,7 @@ export const Navbar = () => {
                       {link.label}
                     </span>
                     <svg
-                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-0 group-hover:translate-x-1 transition-transform"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-0 group-hover:translate-x-1"
                       width="14"
                       height="14"
                       viewBox="0 0 14 14"

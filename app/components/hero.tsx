@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import Image from "next/image";
+
 const headlineLines = [
   { text: "Meticulously sourced.", delay: 0.5 },
   { text: "Roasted fresh.", delay: 0.72 },
@@ -10,7 +11,6 @@ const headlineLines = [
 export const Hero = () => {
   return (
     <section className="relative w-full h-screen min-h-150 flex flex-col overflow-hidden bg-[#0d0d0e]">
-      {/* ── Video / Image Backdrop ── */}
       {/* ── Image Backdrop ── */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -25,34 +25,43 @@ export const Hero = () => {
           blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAIABADASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABgUE/8QAIxAAAQMEAgMBAAAAAAAAAAAAAQIDBAAFEiExBhNBUf/EABUBAQEAAAAAAAAAAAAAAAAAAAEC/8QAFhEBAQEAAAAAAAAAAAAAAAAAAAER/9oADAMBAAIRAxEAPwCuXK/2+3LLcZSW3EpJShtO6lqA7AAZJrO2viO3WorMaSFOyFjKlrOST7kkmpLVljjWqCiOhSlKUkqUpXJJPc1JrKUpQf/Z"
         />
 
-        {/* Darkening overlay */}
-        <div className="absolute inset-0 bg-black/63 z-10" />
+        {/* Base darkening */}
+        <div className="absolute inset-0 bg-black/60 z-10" />
+
+        {/* Bottom-weighted gradient — sharpens text legibility without killing the photo */}
+        <div
+          className="absolute inset-0 z-20 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to top, rgba(13,13,14,0.92) 0%, rgba(13,13,14,0.55) 40%, rgba(13,13,14,0.15) 100%)",
+          }}
+        />
 
         {/* Vignette */}
         <div
           className="absolute inset-0 z-20 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.75) 100%)",
+              "radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.65) 100%)",
           }}
         />
       </div>
-      {/* ── Thin horizontal rule — architectural detail ── */}
 
-      {/* ── Headline — lower third ── */}
-      <div className="relative z-30 mt-auto px-6 md:px-14 pb-16 md:pb-20 max-w-5xl">
+      {/* ── Content — lower third ── */}
+      <div className="relative z-30 mt-auto px-6 md:px-14 pb-12 md:pb-20 max-w-4xl">
+
         {/* Eyebrow */}
         <motion.p
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.7 }}
-          className="text-[10px] tracking-[0.3em] uppercase text-[#a1a1aa] font-inter font-light  mb-3"
+          className="text-[10px] tracking-[0.3em] uppercase text-[#a1a1aa] font-inter font-light mb-4"
         >
           Single Origin · Small Batch
         </motion.p>
 
-        {/* Main headline */}
-        <h1 className="font-cormorant font-light leading-[1.08] overflow-hidden">
+        {/* Headline — reduced ~12% from previous clamp, tighter line-height */}
+        <h1 className="font-cormorant font-light leading-[1.06] overflow-hidden">
           {headlineLines.map(({ text, delay }, i) => (
             <span key={i} className="block overflow-hidden">
               <motion.span
@@ -65,13 +74,13 @@ export const Hero = () => {
                   ease: [0.76, 0, 0.24, 1],
                 }}
                 style={{
-                  fontSize: "clamp(2.6rem, 7.5vw, 6.5rem)",
+                  fontSize: "clamp(1.75rem, 6.5vw, 5.6rem)",
                   color:
                     i === 2
-                      ? "rgba(244,244,245,0.55)" // dimmed last line for rhythm
+                      ? "rgba(244,244,245,0.5)"
                       : "rgba(244,244,245,0.93)",
                   fontStyle: i === 1 ? "italic" : "normal",
-                  letterSpacing: "-0.01em",
+                  letterSpacing: "-0.015em",
                 }}
               >
                 {text}
@@ -80,35 +89,62 @@ export const Hero = () => {
           ))}
         </h1>
 
-        {/* Divider + sub */}
+        {/* Hours */}
         <motion.div
           initial={{ opacity: 0, x: -12 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 1.3, duration: 0.6 }}
-          className="flex items-center gap-4 mt-8"
+          className="flex items-center gap-4 mt-6 md:mt-7"
         >
-          <span className="block w-10 h-px bg-[#27272a]" />
+          <span className="block w-8 h-px bg-[#3f3f46]" />
           <p className="text-[11px] tracking-[0.22em] uppercase text-[#a1a1aa] font-inter font-light">
             Open daily — 7am to 10pm
           </p>
         </motion.div>
 
-        {/* CTA */}
+        {/* ── CTA Group ── */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.5, duration: 0.55 }}
-          className="mt-8 flex items-center gap-5"
+          className="mt-7 md:mt-8 flex flex-row items-center gap-4 md:gap-6"
         >
+          {/* PRIMARY — bordered button */}
+          <a
+            href="#reserve"
+            className="
+              inline-flex items-center justify-center
+              px-6 py-3 md:px-7 md:py-3.5
+              border border-[#f4f4f5]/70
+              text-[11px] tracking-[0.2em] uppercase
+              text-[#f4f4f5] font-inter font-light
+              hover:bg-[#f4f4f5]/8 hover:border-[#ffffff]
+              active:bg-[#f4f4f5]/12
+              transition-all duration-300
+              min-h-[44px] md:min-h-0
+            "
+          >
+            Reserve Table
+          </a>
+
+          {/* SECONDARY — text link */}
           <a
             href="#menu"
-            className="inline-flex items-center gap-3 group text-[11px] tracking-[0.22em] uppercase text-[#f4f4f5] font-inter font-light hover:text-[#a1a1aa] transition-colors duration-300"
+            className="
+              inline-flex items-center gap-2.5 group
+              text-[11px] tracking-[0.2em] uppercase
+              text-[#71717a] font-inter font-light
+              hover:text-[#a1a1aa]
+              transition-colors duration-300
+              min-h-[44px] md:min-h-0
+              py-3
+            "
           >
-            Explore the Menu
+            View Menu
             <svg
-              className="translate-x-0 group-hover:translate-x-1.5 transition-transform duration-300"
-              width="18"
-              height="12"
+              className="translate-x-0 group-hover:translate-x-1 transition-transform duration-300"
+              width="16"
+              height="10"
               viewBox="0 0 18 12"
               fill="none"
             >
@@ -122,7 +158,7 @@ export const Hero = () => {
         </motion.div>
       </div>
 
-      {/* ── Bottom scroll indicator ── */}
+      {/* ── Scroll indicator ── */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
