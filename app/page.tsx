@@ -3,7 +3,7 @@ import BentoGallery from "./components/gallery";
 import { Hero } from "./components/hero";
 import { Marquee } from "./components/marquee";
 import Menu from "./components/menu";
-import {ReservationWidget} from "./components/reservation";
+import ReservationWidget from "./components/reservation";
 
 
 
