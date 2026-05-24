@@ -197,7 +197,7 @@ export default function TheGroundFooter() {
       {/* FIX: was font-serif (broken) — now font-cormorant */}
       <div className="px-6 pb-2 pt-16 md:px-12 lg:px-20">
         <p
-          className="pointer-events-none select-none font-cormorant font-light leading-none text-[#18181b]"
+          className="pointer-events-none select-none font-cormorant font-light leading-none text-[#2f2f35]"
           style={{
             fontSize: "clamp(42px, 9vw, 120px)",
             letterSpacing: "-0.03em",

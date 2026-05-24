@@ -32,15 +32,18 @@ const StepLabel: React.FC<{
   optional?: boolean;
 }> = ({ n, label, optional }) => (
   <div className="flex items-center gap-3 mb-5">
-    <span className="font-inter text-[9px] font-light uppercase tracking-[0.25em] text-[#3f3f46]">
+    {/* Step number + label: was #3f3f46, now #71717a — clearly visible */}
+    <span className="font-inter text-[9px] font-light uppercase tracking-[0.25em] text-[#71717a]">
       {n}&nbsp;&nbsp;{label}
     </span>
     {optional && (
-      <span className="font-inter text-[9px] font-light tracking-[0.15em] text-[#27272a]">
+      /* "optional" tag: was #27272a (nearly invisible), now #52525b */
+      <span className="font-inter text-[9px] font-light tracking-[0.15em] text-[#52525b]">
         optional
       </span>
     )}
-    <span className="h-px flex-1 bg-[#1c1c1e]" aria-hidden="true" />
+    {/* Divider line: was #1c1c1e, nudge to #27272a so it reads as intentional */}
+    <span className="h-px flex-1 bg-[#27272a]" aria-hidden="true" />
   </div>
 );
 
@@ -66,12 +69,10 @@ const SuccessView: React.FC<SuccessProps> = ({
     exit={{ opacity: 0 }}
     transition={{ duration: 0.5, ease: [0.32, 0, 0.18, 1] }}
     className="flex min-h-[60vh] flex-col items-center justify-center py-12 text-center"
-    // Announce confirmation to screen readers immediately on mount
     role="status"
     aria-live="polite"
     aria-label={`Reservation confirmed for ${guests} guest${guests > 1 ? "s" : ""} on ${dateLabel} at ${slot}. Booking reference ${bookingRef}.`}
   >
-    {/* Animated checkmark — decorative */}
     <motion.div
       initial={{ scale: 0.6, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
@@ -82,7 +83,7 @@ const SuccessView: React.FC<SuccessProps> = ({
       <svg className="absolute inset-0" viewBox="0 0 80 80" fill="none">
         <motion.circle
           cx="40" cy="40" r="38"
-          stroke="#27272a" strokeWidth="0.8"
+          stroke="#3f3f46" strokeWidth="0.8"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 0.9, ease: "easeOut" }}
@@ -114,7 +115,8 @@ const SuccessView: React.FC<SuccessProps> = ({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.85, duration: 0.5 }}
-      className="mt-3 font-cormorant font-light italic text-[#71717a]"
+      /* Italic subline: was #71717a, now #8e8e9a — noticeably softer but legible */
+      className="mt-3 font-cormorant font-light italic text-[#8e8e9a]"
       style={{ fontSize: "clamp(1rem, 2vw, 1.3rem)" }}
     >
       We look forward to hosting you.
@@ -124,7 +126,7 @@ const SuccessView: React.FC<SuccessProps> = ({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1.05, duration: 0.5 }}
-      className="mt-10 inline-flex flex-wrap items-stretch justify-center divide-x divide-[#1c1c1e] border border-[#1c1c1e]"
+      className="mt-10 inline-flex flex-wrap items-stretch justify-center divide-x divide-[#27272a] border border-[#27272a]"
     >
       {[
         ["Date", dateLabel],
@@ -132,10 +134,12 @@ const SuccessView: React.FC<SuccessProps> = ({
         ["Guests", `${guests}`],
       ].map(([k, v]) => (
         <div key={k} className="flex flex-col gap-1.5 px-7 py-5 text-center">
-          <span className="font-inter text-[8.5px] font-light uppercase tracking-[0.25em] text-[#3f3f46]">
+          {/* Summary card labels: was #3f3f46, now #71717a */}
+          <span className="font-inter text-[8.5px] font-light uppercase tracking-[0.25em] text-[#71717a]">
             {k}
           </span>
-          <span className="font-cormorant text-xl font-light text-[#a1a1aa]">
+          {/* Summary values: was #a1a1aa, now #c4c4cc */}
+          <span className="font-cormorant text-xl font-light text-[#c4c4cc]">
             {v}
           </span>
         </div>
@@ -148,7 +152,8 @@ const SuccessView: React.FC<SuccessProps> = ({
       transition={{ delay: 1.3, duration: 0.5 }}
       className="mt-8 flex flex-col items-center gap-5"
     >
-      <p className="font-inter text-[9px] font-light uppercase tracking-[0.3em] text-[#27272a]">
+      {/* Booking ref: was #27272a (almost invisible), now #52525b */}
+      <p className="font-inter text-[9px] font-light uppercase tracking-[0.3em] text-[#52525b]">
         Booking ref&nbsp;·&nbsp;{bookingRef}
       </p>
 
@@ -156,17 +161,19 @@ const SuccessView: React.FC<SuccessProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5, duration: 0.5 }}
-        className="mt-2 max-w-xs font-inter text-[9px] font-light leading-[1.7] tracking-[0.12em] text-[#3a3a3e] text-center"
+        /* Fine print: was #3a3a3e (barely visible), now #52525b */
+        className="mt-2 max-w-xs font-inter text-[9px] font-light leading-[1.7] tracking-[0.12em] text-[#52525b] text-center"
       >
         Tables are held for a maximum of 15 minutes past your reserved
         time before being released to walk-in guests.
       </motion.p>
 
-      <span className="block h-px w-8 bg-[#1c1c1e]" aria-hidden="true" />
+      <span className="block h-px w-8 bg-[#27272a]" aria-hidden="true" />
 
+      {/* Reset link: was #3f3f46, hover #71717a — flip both up by one stop */}
       <button
         onClick={onReset}
-        className="font-inter text-[9px] font-light uppercase tracking-[0.22em] text-[#3f3f46] transition-colors duration-300 hover:text-[#71717a]"
+        className="font-inter text-[9px] font-light uppercase tracking-[0.22em] text-[#71717a] transition-colors duration-300 hover:text-[#a1a1aa]"
       >
         Make another reservation
       </button>
@@ -205,7 +212,6 @@ export const ReservationWidget: React.FC = () => {
     ? `${DAY_NAMES[selectedDate.getDay()]} ${selectedDate.getDate()} ${MONTH_SHORT[selectedDate.getMonth()]}`
     : "";
 
-  // ISO date string for the <time> element (YYYY-MM-DD)
   const dateISO = selectedDate
     ? `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(2, "0")}`
     : "";
@@ -241,7 +247,7 @@ export const ReservationWidget: React.FC = () => {
         initial={{ scaleX: 0 }}
         animate={inView ? { scaleX: 1 } : { scaleX: 0 }}
         transition={{ duration: 1.1, ease: [0.76, 0, 0.24, 1] }}
-        className="absolute top-0 left-0 right-0 h-px bg-[#1c1c1e] origin-left"
+        className="absolute top-0 left-0 right-0 h-px bg-[#27272a] origin-left"
         aria-hidden="true"
       />
 
@@ -261,7 +267,8 @@ export const ReservationWidget: React.FC = () => {
                 transition={{ duration: 0.6 }}
                 className="mb-12"
               >
-                <p className="font-inter text-[9.5px] font-light uppercase tracking-[0.3em] text-[#52525b] mb-3">
+                {/* Eyebrow: was #52525b, lift to #71717a */}
+                <p className="font-inter text-[9.5px] font-light uppercase tracking-[0.3em] text-[#71717a] mb-3">
                   Reserve a Table
                 </p>
                 <h2
@@ -285,23 +292,23 @@ export const ReservationWidget: React.FC = () => {
               >
                 <StepLabel n="01" label="Choose a date" />
 
-                <p className="font-inter text-[9px] font-light uppercase tracking-[0.22em] text-[#52525b] mb-4">
+                {/* Month/year label: was #52525b, lift to #71717a */}
+                <p className="font-inter text-[9px] font-light uppercase tracking-[0.22em] text-[#71717a] mb-4">
                   {MONTH_NAMES[today.getMonth()]} {today.getFullYear()}
                 </p>
 
-                {/* Day headers — aria-hidden; the button labels carry the accessible info */}
+                {/* Day-of-week headers: was #3f3f46, lift to #52525b */}
                 <div className="grid grid-cols-7 gap-1 mb-1" aria-hidden="true">
                   {DAY_NAMES.map((d) => (
                     <p
                       key={d}
-                      className="font-inter text-[8.5px] font-light uppercase tracking-[0.15em] text-[#3f3f46] text-center pb-2"
+                      className="font-inter text-[8.5px] font-light uppercase tracking-[0.15em] text-[#52525b] text-center pb-2"
                     >
                       {d}
                     </p>
                   ))}
                 </div>
 
-                {/* Calendar grid — wrap in a group role so screen readers announce it as a date picker */}
                 <div
                   className="grid grid-cols-7 gap-1"
                   role="group"
@@ -332,10 +339,12 @@ export const ReservationWidget: React.FC = () => {
                           transition-all duration-200 focus:outline-none
                           ${
                             isPast
-                              ? "cursor-not-allowed border-[#1c1c1e] text-[#3f3f46] opacity-25"
+                              /* Past days: keep muted but readable — border #27272a, text #52525b */
+                              ? "cursor-not-allowed border-[#27272a] text-[#52525b] opacity-30"
                               : isSelected
-                              ? "border-[#f4f4f5] bg-white/[0.04] text-[#f4f4f5]"
-                              : "border-[#1c1c1e] text-[#71717a] hover:border-[#3f3f46] hover:text-[#a1a1aa]"
+                              ? "border-[#f4f4f5] bg-white/4 text-[#f4f4f5]"
+                              /* Available days: was #71717a text, now #a1a1aa — much easier to read */
+                              : "border-[#27272a] text-[#a1a1aa] hover:border-[#52525b] hover:text-[#d4d4d8]"
                           }
                         `}
                       >
@@ -371,10 +380,12 @@ export const ReservationWidget: React.FC = () => {
                         tracking-[0.12em] border transition-all duration-200 focus:outline-none
                         ${
                           !s.avail
-                            ? "cursor-not-allowed border-[#1c1c1e] text-[#3f3f46] line-through opacity-30"
+                            /* Unavailable slots: was barely-there, now #52525b text */
+                            ? "cursor-not-allowed border-[#27272a] text-[#52525b] line-through opacity-40"
                             : selectedSlot === s.t
-                            ? "border-[#f4f4f5] bg-white/[0.04] text-[#f4f4f5]"
-                            : "border-[#1c1c1e] text-[#71717a] hover:border-[#3f3f46] hover:text-[#a1a1aa]"
+                            ? "border-[#f4f4f5] bg-white/4 text-[#f4f4f5]"
+                            /* Available slots: was #818189, lift to #a1a1aa */
+                            : "border-[#27272a] text-[#a1a1aa] hover:border-[#52525b] hover:text-[#d4d4d8]"
                         }
                       `}
                     >
@@ -396,7 +407,8 @@ export const ReservationWidget: React.FC = () => {
                   <button
                     onClick={() => setGuests((g) => Math.max(1, g - 1))}
                     aria-label="Decrease number of guests"
-                    className="flex h-9 w-9 items-center justify-center border border-[#27272a] font-cormorant text-xl text-[#71717a] transition-all duration-200 hover:border-[#a1a1aa] hover:text-[#f4f4f5] focus:outline-none"
+                    /* Stepper buttons: was #71717a, lift to #a1a1aa */
+                    className="flex h-9 w-9 items-center justify-center border border-[#3f3f46] font-cormorant text-xl text-[#a1a1aa] transition-all duration-200 hover:border-[#a1a1aa] hover:text-[#f4f4f5] focus:outline-none"
                   >
                     −
                   </button>
@@ -412,11 +424,12 @@ export const ReservationWidget: React.FC = () => {
                   <button
                     onClick={() => setGuests((g) => Math.min(12, g + 1))}
                     aria-label="Increase number of guests"
-                    className="flex h-9 w-9 items-center justify-center border border-[#27272a] font-cormorant text-xl text-[#71717a] transition-all duration-200 hover:border-[#a1a1aa] hover:text-[#f4f4f5] focus:outline-none"
+                    className="flex h-9 w-9 items-center justify-center border border-[#3f3f46] font-cormorant text-xl text-[#a1a1aa] transition-all duration-200 hover:border-[#a1a1aa] hover:text-[#f4f4f5] focus:outline-none"
                   >
                     +
                   </button>
-                  <span className="font-inter text-[10px] font-light uppercase tracking-[0.2em] text-[#52525b]" aria-hidden="true">
+                  {/* "guests" label: was #52525b, lift to #71717a */}
+                  <span className="font-inter text-[10px] font-light uppercase tracking-[0.2em] text-[#71717a]" aria-hidden="true">
                     {guests === 1 ? "guest" : "guests"}
                   </span>
                 </div>
@@ -438,10 +451,10 @@ export const ReservationWidget: React.FC = () => {
                   aria-label="Additional notes for your reservation"
                   className="
                     w-full resize-none bg-transparent px-4 py-3
-                    font-inter text-xs font-light tracking-wide text-[#a1a1aa]
-                    border border-[#1f1f20] outline-none
-                    placeholder:text-[#3f3f46]
-                    focus:border-[#3f3f46] transition-colors duration-200
+                    font-inter text-xs font-light tracking-wide text-[#c4c4cc]
+                    border border-[#27272a] outline-none
+                    placeholder:text-[#52525b]
+                    focus:border-[#52525b] transition-colors duration-200
                   "
                 />
               </motion.div>
@@ -454,11 +467,12 @@ export const ReservationWidget: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.35 }}
-                    className="mb-8 border-t border-[#1c1c1e] pt-6"
+                    className="mb-8 border-t border-[#27272a] pt-6"
                     aria-live="polite"
                     aria-label={`Reservation summary: ${dateLabel} at ${selectedSlot}, ${guests} ${guests === 1 ? "guest" : "guests"}`}
                   >
-                    <p className="font-inter text-[9px] font-light uppercase tracking-[0.22em] text-[#3f3f46] mb-4">
+                    {/* "Summary" label: was #3f3f46, now #71717a */}
+                    <p className="font-inter text-[9px] font-light uppercase tracking-[0.22em] text-[#71717a] mb-4">
                       Summary
                     </p>
                     <div className="flex flex-wrap gap-8">
@@ -468,7 +482,8 @@ export const ReservationWidget: React.FC = () => {
                         ["Guests", `${guests} ${guests === 1 ? "guest" : "guests"}`, `${guests} ${guests === 1 ? "guest" : "guests"}`],
                       ].map(([k, , v]) => (
                         <div key={String(k)} className="flex flex-col gap-1.5">
-                          <span className="font-inter text-[9px] font-light uppercase tracking-[0.22em] text-[#3f3f46]">
+                          {/* Summary keys: was #3f3f46, now #71717a */}
+                          <span className="font-inter text-[9px] font-light uppercase tracking-[0.22em] text-[#71717a]">
                             {k}
                           </span>
                           <span className="font-cormorant text-xl font-light text-[#f4f4f5]">
@@ -499,7 +514,8 @@ export const ReservationWidget: React.FC = () => {
                     ${
                       canSubmit
                         ? "border-[#f4f4f5] text-[#f4f4f5] hover:bg-[#f4f4f5] hover:text-[#0d0d0e]"
-                        : "cursor-not-allowed border-[#27272a] text-[#3f3f46]"
+                        /* Disabled CTA: was #27272a border + #3f3f46 text, lift both */
+                        : "cursor-not-allowed border-[#3f3f46] text-[#52525b]"
                     }
                   `}
                 >
@@ -514,8 +530,9 @@ export const ReservationWidget: React.FC = () => {
                 </button>
 
                 {!canSubmit && (
+                  /* Hint text: was #27272a (invisible), now #52525b */
                   <p
-                    className="mt-3 font-inter text-[9px] font-light uppercase tracking-[0.18em] text-[#27272a]"
+                    className="mt-3 font-inter text-[9px] font-light uppercase tracking-[0.18em] text-[#52525b]"
                     aria-live="polite"
                   >
                     {!selectedDate
